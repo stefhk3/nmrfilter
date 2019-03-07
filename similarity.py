@@ -59,7 +59,9 @@ stddevs = {}
 costspercompound = {}
 stddevspercompound = {}
 s=0
+noshifts= []
 for spectrum_simulated in spectra_simulated:
+	if len(spectrum_simulated)>0:
 		#print(str(len(spectrum_simulated))+' b '+str(len(spectrum_real)))
 		cost=np.zeros((len(spectrum_simulated),len(spectrum_real)))
 		i=0
@@ -103,7 +105,7 @@ for spectrum_simulated in spectra_simulated:
 				for row in row_ind:
 					#print(str(peak[0])+' '+str(spectrum_real[col_ind[row]][0])+' '+str(peak[1])+' '+str(spectrum_real[col_ind[row]][1]))
 					if peak[0]==spectrum_real[col_ind[i]][0] and peak[1]==spectrum_real[col_ind[i]][1] and cost[row][col_ind[i]]<90:
-						#print('hit');
+						#print('hit'+str(peak)+' '+str(spectrum_real[col_ind[i]]));
 						found=True
 						number_of_hits+=1
 						break;
@@ -117,7 +119,9 @@ for spectrum_simulated in spectra_simulated:
 		stddevs[np.std(hits_clusters)].append(s)
 		stddevspercompound[s]=np.std(hits_clusters)
 		#print('standard deviation '+str(np.std(hits_clusters)))
-		s+=1
+	else:
+		noshifts.append(s)
+	s+=1
 
 #we have now got the costs in costs and the standard deviations of the cluster distributions in stddists, so we can do the normalisation
 #print(costs)
@@ -128,25 +132,30 @@ maxcost=0
 mincost=sys.float_info.max
 maxstddev=0
 minstddev=sys.float_info.max
+costsum=0
+stdsum=0
 for cost in costs:
 	if cost<mincost:
 		mincost=cost
 	if cost>maxcost:
 		maxcost=cost
+	costsum=costsum+len(costs[cost])
 for stddev in stddevs:
 	if stddev<minstddev:
 		minstddev=stddev
 	if stddev>maxstddev:
 		maxstddev=stddev
+	stdsum=stdsum+len(stddevs[stddev])
+#print(costsum, stdsum)
 costspercompound_norm = {}
 stddevspercompound_norm = {}
 overallcosts={}
 for i in costspercompound:
 	costspercompound_norm[i]=(costspercompound[i]-mincost)/(maxcost-mincost)
 	stddevspercompound_norm[i]=(stddevspercompound[i]-minstddev)/(maxstddev-minstddev)
-	overallcosts[(costspercompound_norm[i]+(1-stddevspercompound_norm[i]))/2]=i
+	overallcosts.setdefault((costspercompound_norm[i]+(1-stddevspercompound_norm[i]))/2, [])
+	overallcosts[(costspercompound_norm[i]+(1-stddevspercompound_norm[i]))/2].append(i)
 	i+=1
-#print(overallcosts)
 
 fp = open(cp.get('onesectiononly', 'msmsinput'),'r')
 line=fp.readline().strip()
@@ -155,8 +164,14 @@ while line:
 	smiles.append(line)
 	line=fp.readline().strip()
 
+#with open('testallnames.txt') as f:
+#     linesnames = f.read().splitlines()
 i=0
-for position in sorted(overallcosts):
-	print(str(i+1)+': '+str(smiles[overallcosts[position]])+', distance: '+"{0:.2f}".format(costspercompound_norm[overallcosts[position]])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[overallcosts[position]]))
-	i+=1
+for cost in sorted(overallcosts):
+	for position in overallcosts[cost]:
+		print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position]))
+		#print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position]))
+		i+=1
 
+for noshift in noshifts:
+	print('no shifts were predicted for '+str(smiles[noshift])+' and we cannot say anything about it!')
