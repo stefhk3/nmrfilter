@@ -164,14 +164,18 @@ while line:
 	smiles.append(line)
 	line=fp.readline().strip()
 
-#with open('testallnames.txt') as f:
-#     linesnames = f.read().splitlines()
+debug = cp.get('onesectiononly', 'debug')
+if debug=='true':
+    with open('testallnames.txt') as f:
+        linesnames = f.read().splitlines()
 i=0
 for cost in sorted(overallcosts):
-	for position in overallcosts[cost]:
-		print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position]))
-		#print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position]))
-		i+=1
+    for position in overallcosts[cost]:
+        if debug=='true':
+            print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position]))
+        else:
+            print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position]))
+        i+=1
 
 for noshift in noshifts:
 	print('no shifts were predicted for '+str(smiles[noshift])+' and we cannot say anything about it!')
