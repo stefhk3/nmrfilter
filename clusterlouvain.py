@@ -3,18 +3,21 @@ import configparser
 import csv
 import louvain
 
-def Three_Column_List(file):
+def Two_Column_List(file):
     with open(file) as input:
         mycsv = csv.reader(input, delimiter='\t', skipinitialspace=True)
         peaks = []
+        i=0
         for cols in mycsv:
-            peaks.append([int(cols[0].strip()),float(cols[1].strip()),float(cols[2].strip())])
+            if len(cols)==2:
+                peaks.append([i,float(cols[0].strip()),float(cols[1].strip())])
+            i+=1
     return peaks
 
 cp = configparser.SafeConfigParser()
 cp.readfp(open('nmrproc.properties'))
 
-realpeaks = Three_Column_List(cp.get('onesectiononly', 'spectruminput'))
+realpeaks = Two_Column_List(cp.get('onesectiononly', 'spectruminput'))
 #print(realpeaks)
 g=Graph.Read_Edgelist(cp.get('onesectiononly', 'clusteringoutput'),directed=False)
 #print(g)
