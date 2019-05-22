@@ -4,6 +4,8 @@ import csv
 import math
 import configparser
 import sys
+import os
+import matplotlib.pyplot as plt
 
 def Two_Column_List(file):
     with open(file) as input:
@@ -29,7 +31,7 @@ while line:
 		spectrum_simulated=[]
 	else:
 		peaks_string=line.split(",")
-		peaks_float=[float(peaks_string[0]),float(peaks_string[1])]
+		peaks_float=[float(peaks_string[0]),float(peaks_string[1]),peaks_string[2]]
 		spectrum_simulated.append(peaks_float)
 	line=fp.readline().strip()
 #spectra_simulated.append(spectrum_simulated)
@@ -48,7 +50,6 @@ while line:
 	else:
 		peaks_string=line.split(",")
 		peaks_float=[float(peaks_string[1]),float(peaks_string[2])]
-		#spectrum_real.append(peaks_float)
 		cluster_real.append(peaks_float)
 	line=fp.readline().strip()
 clusters_real.append(cluster_real)
@@ -63,7 +64,27 @@ costspercompound = {}
 stddevspercompound = {}
 s=0
 noshifts= []
+xreal=[]
+yreal=[]
+xsim=[]
+ysim=[]
 for spectrum_simulated in spectra_simulated:
+	xreallocal=[]
+	xreallocal.append([])
+	xreallocal.append([])
+	xreallocal.append([])
+	yreallocal=[]
+	yreallocal.append([])
+	yreallocal.append([])
+	yreallocal.append([])
+	xsimlocal=[]
+	xsimlocal.append([])
+	xsimlocal.append([])
+	xsimlocal.append([])
+	ysimlocal=[]
+	ysimlocal.append([])
+	ysimlocal.append([])
+	ysimlocal.append([])
 	if len(spectrum_simulated)>0:
 		#print(str(len(spectrum_simulated))+' b '+str(len(spectrum_real)))
 		cost=np.zeros((len(spectrum_simulated),len(spectrum_real)))
@@ -72,6 +93,13 @@ for spectrum_simulated in spectra_simulated:
 		for peak_simulated in spectrum_simulated:
 			k=0
 			#print(str(i)+' a '+str(k))
+			type=2
+			if peak_simulated[2]=='b':
+				type=0
+			elif peak_simulated[2]=='q':
+				type=1
+			xsimlocal[type].append(peak_simulated[0])
+			ysimlocal[type].append(peak_simulated[1])
 			for peak_real in spectrum_real:
 				cost[i][k]=(abs(peak_real[0]-peak_simulated[0])+abs((peak_real[1]-peak_simulated[1])*10))*(abs(peak_real[0]-peak_simulated[0])+abs((peak_real[1]-peak_simulated[1]*10)))
 				#if(cost[i][k]<90):
@@ -102,20 +130,31 @@ for spectrum_simulated in spectra_simulated:
 			number_of_peaks=0
 			number_of_hits=0
 			for peak in cluster_real:
-				found=False
+				mincost=sys.float_info.max
+				indexmin=0
+				rowmin=0
 				number_of_peaks+=1
 				i=0
 				for row in row_ind:
 					#print(str(peak[0])+' '+str(spectrum_real[col_ind[row]][0])+' '+str(peak[1])+' '+str(spectrum_real[col_ind[row]][1]))
-					if peak[0]==spectrum_real[col_ind[i]][0] and peak[1]==spectrum_real[col_ind[i]][1] and cost[row][col_ind[i]]<90:
+					if peak[0]==spectrum_real[col_ind[i]][0] and peak[1]==spectrum_real[col_ind[i]][1] and cost[row][col_ind[i]]<mincost:
 						#print('hit'+str(peak)+' '+str(spectrum_real[col_ind[i]]));
-						found=True
-						number_of_hits+=1
-						break;
+						mincost=cost[row][col_ind[i]]
+						indexmin=i
+						rowmin=row
 					i+=1
 				#print(number_of_hits)
 				#if not found:
 					#print('no hit')
+				if mincost<90:
+					number_of_hits+=1
+					type=2
+					if spectrum_simulated[rowmin][2]=='b':
+						type=0
+					elif spectrum_simulated[rowmin][2]=='q':
+						type=1
+					xreallocal[type].append(spectrum_real[col_ind[indexmin]][0])
+					yreallocal[type].append(spectrum_real[col_ind[indexmin]][1])
 			hits_clusters.append(number_of_hits/number_of_peaks)
 		#print(hits_clusters)
 		stddevs.setdefault(np.std(hits_clusters), [])
@@ -125,6 +164,11 @@ for spectrum_simulated in spectra_simulated:
 	else:
 		noshifts.append(s)
 	s+=1
+	xreal.append(xreallocal)
+	yreal.append(yreallocal)
+	xsim.append(xsimlocal)
+	ysim.append(ysimlocal)
+	
 
 #we have now got the costs in costs and the standard deviations of the cluster distributions in stddists, so we can do the normalisation
 #print(costs)
@@ -166,11 +210,35 @@ smiles=[]
 while line:
 	smiles.append(line)
 	line=fp.readline().strip()
-
+usehsqctocsy = cp.get('onesectiononly', 'usehsqctocsy')
 debug = cp.get('onesectiononly', 'debug')
 if debug=='true':
-    with open('testallnames.txt') as f:
-        linesnames = f.read().splitlines()
+	with open('testallnames.txt') as f:
+		linesnames = f.read().splitlines()
+	#we make plot
+	i=0
+	for name in linesnames:
+		fig = plt.figure(figsize=(30,10))
+		ax = fig.add_subplot(1,3,1)
+		ax.scatter(xreal[i][0], yreal[i][0], c='red', label='measured hmbc', alpha=0.3, edgecolors='none')
+		ax.scatter(xsim[i][0], ysim[i][0], c='green', label='simulated hmbc', alpha=0.3, edgecolors='none')
+		ax.legend()
+		ax.grid(True)
+		ax = fig.add_subplot(1,3,2)
+		ax.scatter(xreal[i][1], yreal[i][1], c='red', label='measured hsqc', alpha=0.3, edgecolors='none')
+		ax.scatter(xsim[i][1], ysim[i][1], c='green', label='simulated hsqc', alpha=0.3, edgecolors='none')
+		ax.legend()
+		ax.grid(True)
+		if usehsqctocsy== 'true':
+			ax = fig.add_subplot(1,3,3)
+			ax.scatter(xreal[i][2], yreal[i][2], c='red', label='measured hsqctocsy', alpha=0.3, edgecolors='none')
+			ax.scatter(xsim[i][2], ysim[i][2], c='green', label='simulated hsqc', alpha=0.3, edgecolors='none')
+			ax.legend()
+			ax.grid(True)
+		fig.savefig('plots'+os.sep+name+'.png', transparent=False, dpi=80, bbox_inches="tight")
+		i+=1
+		plt.close()
+        
 i=0
 for cost in sorted(overallcosts):
     for position in overallcosts[cost]:
