@@ -18,14 +18,16 @@ Notice igraph is a different library. If install python-igraph gives an error ab
 
 #Running
 
-The settings for a run are contained in the nmrproc.properties file. It also gives the names of the input/output files. You can change these, but you do not need to do so.
+The program works on projects, where each project is a folder. It must contain the required files (see below) and any results will be written to it. If you checkout the repository https://github.com/stefhk3/nmrfilterprojects you can use this as example projects.
 
-The following data/files need to be supplied to run an anlysis:
+The settings for a run are contained in the nmrproc.properties file. It also gives the names of the input/output files. You can change these, but you do not need to do so. The property datadir is where the projects/folders are searched for. If you have downloaded the nmrfilterprojects examples, set this to the nmrfilterprojects directory.
+ directory.
+The following data/files need to be supplied to run an anlysis in the project folder you want to work on:
 * A list of candidate SMILES. This is in the files specified by the `msmsinput` property (default testall.smi). This must have one structure per line.
 * The measured spectra in `spectruminput` (default realspectrum.csv). This must be a list of shifts, separated by tab. One row is one shift. As a standard, HMBC and HSQC shifts are included here.
 * Set `solvent` property to the solvent used if it is `Methanol-D4 (CD3OD)` or `Chloroform-D1 (CDCl3)`. Otherwise, use `Unreported`.
 
-Once these files are in place, run `nmrfilter.sh` (linux) or `nmrfilter.bat` (windows). This should produce the result list.
+Once these files are in place, run `nmrfilter.sh <projectname>` (linux) or `nmrfilter.bat <projectname>` (windows). This should produce the result list. Replace <projectname> by the name of the project/folder you want to work on.
 
 The following features are optional:
 * You can include HSQCTOCSY shifts. For this, set `usehsqctocsy=true` and include the HSQCTOSY shifts in the `spectruminput` file.
