@@ -14,21 +14,21 @@ def Two_Column_List(file):
             i+=1
     return peaks
 
-cp = configparser.SafeConfigParser()
-cp.readfp(open('nmrproc.properties'))
+def cluster2dspectrumlouvain(cp, project):
+	datapath=cp.get('onesectiononly', 'datadir')
 
-realpeaks = Two_Column_List(cp.get('onesectiononly', 'spectruminput'))
-#print(realpeaks)
-g=Graph.Read_Edgelist(cp.get('onesectiononly', 'clusteringoutput'),directed=False)
-#print(g)
-louvainresult= louvain.find_partition(g, louvain.RBERVertexPartition, resolution_parameter=float(cp.get('onesectiononly', 'rberresolution')))
-#print(louvainresult)
-f=open(cp.get('onesectiononly', 'louvainoutput'),'w')
-for cluster in louvainresult:
-	if len(cluster)>0:
-		f.write('/\n')	
-		for peak in cluster:
-			for realpeak in realpeaks:
-				if realpeak[0]==peak:
-					f.write(str(realpeak[0])+','+str(realpeak[1])+','+str(realpeak[2])+'\n')
-f.close()
+	realpeaks = Two_Column_List(datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'spectruminput'))
+	#print(realpeaks)
+	g=Graph.Read_Edgelist(datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'clusteringoutput'),directed=False)
+	#print(g)
+	louvainresult= louvain.find_partition(g, louvain.RBERVertexPartition, resolution_parameter=float(cp.get('onesectiononly', 'rberresolution')))
+	#print(louvainresult)
+	f=open(datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'louvainoutput'),'w')
+	for cluster in louvainresult:
+		if len(cluster)>0:
+			f.write('/\n')	
+			for peak in cluster:
+				for realpeak in realpeaks:
+					if realpeak[0]==peak:
+						f.write(str(realpeak[0])+','+str(realpeak[1])+','+str(realpeak[2])+'\n')
+	f.close()
