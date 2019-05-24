@@ -2,28 +2,28 @@ import configparser
 import os
 import subprocess
 import sys
+from util import *
 
-cp = configparser.SafeConfigParser()
-cp.readfp(open('nmrproc.properties'))
-datapath=cp.get('onesectiononly', 'datadir')
 project=sys.argv[1]
+cp = readprops(project)
+datapath=cp.get('datadir')
 
-predictionoutputfile=datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'predictionoutput')
+predictionoutputfile=datapath+os.sep+project+os.sep+cp.get('predictionoutput')
 if os.path.exists(predictionoutputfile):
 	os.remove(predictionoutputfile)
-clusteringoutputfile=datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'clusteringoutput')
+clusteringoutputfile=datapath+os.sep+project+os.sep+cp.get('clusteringoutput')
 if os.path.exists(clusteringoutputfile):
 	os.remove(clusteringoutputfile)
-louvainoutputfile=datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'louvainoutput')
+louvainoutputfile=datapath+os.sep+project+os.sep+cp.get('louvainoutput')
 if os.path.exists(louvainoutputfile):
 	os.remove(louvainoutputfile)
-predictionoutputfile=datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'predictionoutput')+'hsqc'
+predictionoutputfile=datapath+os.sep+project+os.sep+cp.get('predictionoutput')+'hsqc'
 if os.path.exists(predictionoutputfile):
 	os.remove(predictionoutputfile)
-predictionoutputfile=datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'predictionoutput')+'hmbc'
+predictionoutputfile=datapath+os.sep+project+os.sep+cp.get('predictionoutput')+'hmbc'
 if os.path.exists(predictionoutputfile):
 	os.remove(predictionoutputfile)
-predictionoutputfile=datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'predictionoutput')+'hsqctocsy'
+predictionoutputfile=datapath+os.sep+project+os.sep+cp.get('predictionoutput')+'hsqctocsy'
 if os.path.exists(predictionoutputfile):
 	os.remove(predictionoutputfile)
 

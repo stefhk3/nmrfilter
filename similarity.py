@@ -19,8 +19,8 @@ def Two_Column_List(file):
     return peaks
 
 def similarity(cp, project):
-	datapath=cp.get('onesectiononly', 'datadir')
-	fp = open(datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'predictionoutput'),'r')
+	datapath=cp.get('datadir')
+	fp = open(datapath+os.sep+project+os.sep+cp.get('predictionoutput'),'r')
 	spectra_simulated = []
 	spectrum_simulated= []
 	line=fp.readline().strip()
@@ -37,7 +37,7 @@ def similarity(cp, project):
 	#print(spectra_simulated)
 	fp.close()
 
-	fp = open(datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'louvainoutput'),'r')
+	fp = open(datapath+os.sep+project+os.sep+cp.get('louvainoutput'),'r')
 	clusters_real = []
 	cluster_real= []
 	line=fp.readline().strip()
@@ -55,7 +55,7 @@ def similarity(cp, project):
 	#print(clusters_real)
 	fp.close()
 
-	spectrum_real = Two_Column_List(datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'spectruminput'))
+	spectrum_real = Two_Column_List(datapath+os.sep+project+os.sep+cp.get('spectruminput'))
 
 	costs = {}
 	stddevs = {}
@@ -203,14 +203,14 @@ def similarity(cp, project):
 		overallcosts[(costspercompound_norm[i]+(1-stddevspercompound_norm[i]))/2].append(i)
 		i+=1
 
-	fp = open(datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'msmsinput'),'r')
+	fp = open(datapath+os.sep+project+os.sep+cp.get('msmsinput'),'r')
 	line=fp.readline().strip()
 	smiles=[]
 	while line:
 		smiles.append(line)
 		line=fp.readline().strip()
-	usehsqctocsy = cp.get('onesectiononly', 'usehsqctocsy')
-	debug = cp.get('onesectiononly', 'debug')
+	usehsqctocsy = cp.get('usehsqctocsy')
+	debug = cp.get('debug')
 	if debug=='true':
 		with open(datapath+os.sep+project+os.sep+'testallnames.txt') as f:
 			linesnames = f.read().splitlines()

@@ -23,12 +23,12 @@ def setofy(peaks):
 	return yvalues
 
 def cluster2dspectrum(cp, project):
-	datapath=cp.get('onesectiononly', 'datadir')
+	datapath=cp.get('datadir')
 	
-	C_LIMIT=float(cp.get('onesectiononly', 'tolerancec'))
-	H_LIMIT=float(cp.get('onesectiononly', 'toleranceh'))
+	C_LIMIT=float(cp.get('tolerancec'))
+	H_LIMIT=float(cp.get('toleranceh'))
 
-	peaks = Two_Column_List(datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'spectruminput'))
+	peaks = Two_Column_List(datapath+os.sep+project+os.sep+cp.get('spectruminput'))
 	#print(peaks)
 
 	xclusters=[]
@@ -86,7 +86,7 @@ def cluster2dspectrum(cp, project):
 	#				print(str(peak1[0])+'->'+str(peak2[0]))
 
 
-	f=open(datapath+os.sep+project+os.sep+cp.get('onesectiononly', 'clusteringoutput'),'w')
+	f=open(datapath+os.sep+project+os.sep+cp.get('clusteringoutput'),'w')
 	for cluster in xclusters:
 		for peak1 in cluster:
 			for peak2 in cluster:
