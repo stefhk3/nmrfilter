@@ -217,8 +217,8 @@ def similarity(cp, project):
 	stddevspercompound_norm = {}
 	overallcosts={}
 	for i in costspercompound:
-		costspercompound_norm[i]=costspercompound[i]#(costspercompound[i]-mincost)/(maxcost-mincost)
-		stddevspercompound_norm[i]=stddevspercompound[i]#(stddevspercompound[i]-minstddev)/(maxstddev-minstddev)
+		costspercompound_norm[i]=(costspercompound[i]-mincost)/(maxcost-mincost)
+		stddevspercompound_norm[i]=(stddevspercompound[i]-minstddev)/(maxstddev-minstddev)
 		overallcosts.setdefault((costspercompound_norm[i]+(1-stddevspercompound_norm[i]))/2, [])
 		overallcosts[(costspercompound_norm[i]+(1-stddevspercompound_norm[i]))/2].append(i)
 		i+=1
