@@ -67,6 +67,8 @@ def similarity(cp, project):
 	yreal=[]
 	xsim=[]
 	ysim=[]
+	xrealunassigned=[]
+	yrealunassigned=[]
 	for spectrum_simulated in spectra_simulated:
 		xreallocal=[]
 		xreallocal.append([])
@@ -84,6 +86,14 @@ def similarity(cp, project):
 		ysimlocal.append([])
 		ysimlocal.append([])
 		ysimlocal.append([])
+		xreallocalunassigned=[]
+		xreallocalunassigned.append([])
+		xreallocalunassigned.append([])
+		xreallocalunassigned.append([])
+		yreallocalunassigned=[]
+		yreallocalunassigned.append([])
+		yreallocalunassigned.append([])
+		yreallocalunassigned.append([])
 		if len(spectrum_simulated)>0:
 			#print(str(len(spectrum_simulated))+' b '+str(len(spectrum_real)))
 			cost=np.zeros((len(spectrum_simulated),len(spectrum_real)))
@@ -100,11 +110,12 @@ def similarity(cp, project):
 				xsimlocal[type].append(peak_simulated[0])
 				ysimlocal[type].append(peak_simulated[1])
 				for peak_real in spectrum_real:
-					cost[i][k]=(abs(peak_real[0]-peak_simulated[0])+abs((peak_real[1]-peak_simulated[1])*10))*(abs(peak_real[0]-peak_simulated[0])+abs((peak_real[1]-peak_simulated[1]*10)))
-					#if(cost[i][k]<90):
-					#print(peak_real)
-					#print(peak_simulated)
-					#print(cost[i][k])
+					x=abs(peak_real[0]-peak_simulated[0])+abs((peak_real[1]-peak_simulated[1])*10)
+					cost[i][k]=x*x
+					#if(peak_real[0]>191 and peak_real[0]<192 and peak_real[1]>7.3 and peak_real[1]<7.5):
+					#	print(peak_real)
+					#	print(peak_simulated)
+					#	print(cost[i][k])
 					k+=1
 				i+=1
 			#print(cost)
@@ -118,11 +129,11 @@ def similarity(cp, project):
 			#print(costspercompound[s])
 			#print(row_ind)
 			#print(col_ind)
-			i=0
+			#i=0
 			#for row in row_ind:
-				#print(str(row)+' '+str(col_ind[i]))
-				#print('1_ '+str(spectrum_real[col_ind[i]])+' '+str(spectrum_simulated[row])+' '+str(cost[row][col_ind[i]]))
-				#i+=1
+			#	print(str(row)+' '+str(col_ind[i]))
+			#	print('1_ '+str(spectrum_real[col_ind[i]])+' '+str(spectrum_simulated[row])+' '+str(cost[row][col_ind[i]]))
+			#	i+=1
 			hits_clusters=[]
 			for cluster_real in clusters_real:
 				#print('cluster')
@@ -134,6 +145,7 @@ def similarity(cp, project):
 					rowmin=0
 					number_of_peaks+=1
 					i=0
+					#print(str(peak[0])+'______ '+str(peak[1]))
 					for row in row_ind:
 						#print(str(peak[0])+' '+str(spectrum_real[col_ind[row]][0])+' '+str(peak[1])+' '+str(spectrum_real[col_ind[row]][1]))
 						if peak[0]==spectrum_real[col_ind[i]][0] and peak[1]==spectrum_real[col_ind[i]][1] and cost[row][col_ind[i]]<mincost:
@@ -145,15 +157,21 @@ def similarity(cp, project):
 					#print(number_of_hits)
 					#if not found:
 						#print('no hit')
-					if mincost<90:
+					type=2
+					if spectrum_simulated[rowmin][2]=='b':
+						type=0
+					elif spectrum_simulated[rowmin][2]=='q':
+						type=1
+					#print(mincost)
+					#print(str(spectrum_real[col_ind[indexmin]][0])+' '+str(spectrum_real[col_ind[indexmin]][1]))
+					#print(str(spectrum_simulated[col_ind[rowmin]][0])+' '+str(spectrum_simulated[col_ind[rowmin]][1]))
+					if mincost<9:
 						number_of_hits+=1
-						type=2
-						if spectrum_simulated[rowmin][2]=='b':
-							type=0
-						elif spectrum_simulated[rowmin][2]=='q':
-							type=1
 						xreallocal[type].append(spectrum_real[col_ind[indexmin]][0])
 						yreallocal[type].append(spectrum_real[col_ind[indexmin]][1])
+					else:
+						xreallocalunassigned[type].append(spectrum_real[col_ind[indexmin]][0])
+						yreallocalunassigned[type].append(spectrum_real[col_ind[indexmin]][1])
 				hits_clusters.append(number_of_hits/number_of_peaks)
 			#print(hits_clusters)
 			stddevs.setdefault(np.std(hits_clusters), [])
@@ -167,6 +185,8 @@ def similarity(cp, project):
 		yreal.append(yreallocal)
 		xsim.append(xsimlocal)
 		ysim.append(ysimlocal)
+		xrealunassigned.append(xreallocalunassigned)
+		yrealunassigned.append(yreallocalunassigned)
 		
 
 	#we have now got the costs in costs and the standard deviations of the cluster distributions in stddists, so we can do the normalisation
@@ -197,8 +217,8 @@ def similarity(cp, project):
 	stddevspercompound_norm = {}
 	overallcosts={}
 	for i in costspercompound:
-		costspercompound_norm[i]=(costspercompound[i]-mincost)/(maxcost-mincost)
-		stddevspercompound_norm[i]=(stddevspercompound[i]-minstddev)/(maxstddev-minstddev)
+		costspercompound_norm[i]=costspercompound[i]#(costspercompound[i]-mincost)/(maxcost-mincost)
+		stddevspercompound_norm[i]=stddevspercompound[i]#(stddevspercompound[i]-minstddev)/(maxstddev-minstddev)
 		overallcosts.setdefault((costspercompound_norm[i]+(1-stddevspercompound_norm[i]))/2, [])
 		overallcosts[(costspercompound_norm[i]+(1-stddevspercompound_norm[i]))/2].append(i)
 		i+=1
@@ -217,21 +237,84 @@ def similarity(cp, project):
 		#we make plot
 		i=0
 		for name in linesnames:
+			#print(name)
 			fig = plt.figure(figsize=(30,10))
 			ax = fig.add_subplot(1,3,1)
-			ax.scatter(xreal[i][0], yreal[i][0], c='red', label='measured hmbc', alpha=0.3, edgecolors='none')
-			ax.scatter(xsim[i][0], ysim[i][0], c='green', label='simulated hmbc', alpha=0.3, edgecolors='none')
+			ax.scatter(xsim[i][0], ysim[i][0], c='red', label='simulated hmbc', alpha=0.2, edgecolors='none', s=12)
+			if len(xreal[i][0])>0:
+				ax.scatter(xreal[i][0], yreal[i][0], c='green', label='measured assigned', alpha=0.2, edgecolors='none', s=12)
+			ax.scatter(xrealunassigned[i][0], yrealunassigned[i][0], c='blue', label='measured unassigned closest shifts', alpha=0.2, edgecolors='none', s=12)
+			xrealrest=[]
+			yrealrest=[]
+			for peak_real in spectrum_real:
+				valuecontained=False
+				if peak_real[0] in xreal[i][0] and peak_real[1] in yreal[i][0]:
+					if xreal[i][0].index(peak_real[0])!=yreal[i][0].index(peak_real[1]):
+						valuecontained=True
+				if peak_real[0] in xrealunassigned[i][0] and peak_real[1] in yrealunassigned[i][0]:
+					if xrealunassigned[i][0].index(peak_real[0])!=yrealunassigned[i][0].index(peak_real[1]):
+						valuecontained=True
+				if not valuecontained:
+					xrealrest.append(peak_real[0])
+					yrealrest.append(peak_real[1])
+			if len(xrealrest)>0:
+				ax.scatter(xrealrest, yrealrest, c='grey', label='measured unused', alpha=0.2, edgecolors='none', s=12)
 			ax.legend()
 			ax.grid(True)
 			ax = fig.add_subplot(1,3,2)
-			ax.scatter(xreal[i][1], yreal[i][1], c='red', label='measured hsqc', alpha=0.3, edgecolors='none')
-			ax.scatter(xsim[i][1], ysim[i][1], c='green', label='simulated hsqc', alpha=0.3, edgecolors='none')
+			ax.scatter(xsim[i][1], ysim[i][1], c='red', label='simulated hsqc', alpha=0.2, edgecolors='none', s=12)
+			if len(xreal[i][1])>0:
+				ax.scatter(xreal[i][1], yreal[i][1], c='green', label='measured assigned', alpha=0.2, edgecolors='none', s=12)
+			ax.scatter(xrealunassigned[i][1], yrealunassigned[i][1], c='blue', label='measured unassigned closest shifts', alpha=0.2, edgecolors='none', s=12)
+			xrealrest=[]
+			yrealrest=[]
+			#print(xreal[i][1])
+			#print(yreal[i][1])
+			#print(xrealunassigned[i][1])
+			#print(yrealunassigned[i][1])
+			#print(xsim[i][1])
+			#print(ysim[i][1])
+			for peak_real in spectrum_real:
+				valuecontained=False
+				#print(peak_real)
+				#print(peak_real[0] in xrealunassigned[i][1])
+				#print(peak_real[1] in yrealunassigned[i][1])
+				if peak_real[0] in xreal[i][1] and peak_real[1] in yreal[i][1]:
+					if xreal[i][1].index(peak_real[0])!=yreal[i][1].index(peak_real[1]):
+						valuecontained=True
+				if peak_real[0] in xrealunassigned[i][1] and peak_real[1] in yrealunassigned[i][1]:
+					if xrealunassigned[i][1].index(peak_real[0])!=yrealunassigned[i][1].index(peak_real[1]):
+						valuecontained=True
+				if not valuecontained:
+					xrealrest.append(peak_real[0])
+					yrealrest.append(peak_real[1])
+			if len(xrealrest)>0:
+				ax.scatter(xrealrest, yrealrest, c='grey', label='measured unused', alpha=0.2, edgecolors='none', s=12)
+				#print(xrealrest)
+				#print(yrealrest)
 			ax.legend()
 			ax.grid(True)
 			if usehsqctocsy== 'true':
 				ax = fig.add_subplot(1,3,3)
-				ax.scatter(xreal[i][2], yreal[i][2], c='red', label='measured hsqctocsy', alpha=0.3, edgecolors='none')
-				ax.scatter(xsim[i][2], ysim[i][2], c='green', label='simulated hsqc', alpha=0.3, edgecolors='none')
+				ax.scatter(xsim[i][2], ysim[i][2], c='red', label='simulated hsqc', alpha=0.2, edgecolors='none', s=12)
+				if len(xreal[i][2])>0:
+					ax.scatter(xreal[i][2], yreal[i][2], c='green', label='measured assigned', alpha=0.2, edgecolors='none', s=12)
+				ax.scatter(xrealunassigned[i][2], yrealunassigned[i][2], c='blue', label='measured unassigned closest shifts', alpha=0.2, edgecolors='none', s=12)
+				xrealrest=[]
+				yrealrest=[]
+				for peak_real in spectrum_real:
+					valuecontained=False
+					if peak_real[0] in xreal[i][2] and peak_real[1] in yreal[i][2]:
+						if xreal[i][2].index(peak_real[0])!=yreal[i][2].index(peak_real[1]):
+							valuecontained=True
+					if peak_real[0] in xrealunassigned[i][2] and peak_real[1] in yrealunassigned[i][2]:
+						if xrealunassigned[i][2].index(peak_real[0])!=yrealunassigned[i][2].index(peak_real[1]):
+							valuecontained=True
+					if not valuecontained:
+						xrealrest.append(peak_real[0])
+						yrealrest.append(peak_real[1])
+				if len(xrealrest)>0:
+					ax.scatter(xrealrest, yrealrest, c='grey', label='measured unused', alpha=0.2, edgecolors='none', s=12)
 				ax.legend()
 				ax.grid(True)
 			fig.savefig(datapath+os.sep+project+os.sep+'plots'+os.sep+name+'.png', transparent=False, dpi=80, bbox_inches="tight")
