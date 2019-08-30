@@ -11,9 +11,9 @@ project=sys.argv[1]
 cp = readprops(project)
 datapath=cp.get('datadir')
 
-predictionoutputfile=datapath+os.sep+project+os.sep+cp.get('predictionoutput')
-clusteringoutputfile=datapath+os.sep+project+os.sep+cp.get('clusteringoutput')
-louvainoutputfile=datapath+os.sep+project+os.sep+cp.get('louvainoutput')
+predictionoutputfile=datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('predictionoutput')
+clusteringoutputfile=datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('clusteringoutput')
+louvainoutputfile=datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('louvainoutput')
 
 print("Clustering the peaks in the measured spectrum...")
 cluster2dspectrum(cp, project)

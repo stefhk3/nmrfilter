@@ -20,7 +20,7 @@ def Two_Column_List(file):
 
 def similarity(cp, project):
 	datapath=cp.get('datadir')
-	fp = open(datapath+os.sep+project+os.sep+cp.get('predictionoutput'),'r')
+	fp = open(datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('predictionoutput'),'r')
 	spectra_simulated = []
 	spectrum_simulated= []
 	line=fp.readline().strip()
@@ -37,7 +37,7 @@ def similarity(cp, project):
 	#print(spectra_simulated)
 	fp.close()
 
-	fp = open(datapath+os.sep+project+os.sep+cp.get('louvainoutput'),'r')
+	fp = open(datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('louvainoutput'),'r')
 	clusters_real = []
 	cluster_real= []
 	line=fp.readline().strip()
@@ -218,9 +218,13 @@ def similarity(cp, project):
 	overallcosts={}
 	for i in costspercompound:
 		costspercompound_norm[i]=(costspercompound[i]-mincost)/(maxcost-mincost)
-		stddevspercompound_norm[i]=(stddevspercompound[i]-minstddev)/(maxstddev-minstddev)
-		overallcosts.setdefault((costspercompound_norm[i]+(1-stddevspercompound_norm[i]))/2, [])
-		overallcosts[(costspercompound_norm[i]+(1-stddevspercompound_norm[i]))/2].append(i)
+		if maxstddev-minstddev!=0:
+			stddevspercompound_norm[i]=(stddevspercompound[i]-minstddev)/(maxstddev-minstddev)
+			overallcosts.setdefault((costspercompound_norm[i]+(1-stddevspercompound_norm[i]))/2, [])
+			overallcosts[(costspercompound_norm[i]+(1-stddevspercompound_norm[i]))/2].append(i)
+		else:
+			overallcosts.setdefault((costspercompound_norm[i]+1)/2, [])
+			overallcosts[(costspercompound_norm[i]+1)/2].append(i)
 		i+=1
 
 	fp = open(datapath+os.sep+project+os.sep+cp.get('msmsinput'),'r')
@@ -322,13 +326,25 @@ def similarity(cp, project):
 			plt.close()
 		
 	i=0
+	fp = open(datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('result'),'w')
 	for cost in sorted(overallcosts):
 		for position in overallcosts[cost]:
 			if debug=='true':
-				print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position]))
+				if maxstddev-minstddev!=0:
+					print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position]))
+					fp.write(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+'\n')
+				else:
+					print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation:  n/a')
+					fp.write(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation:  n/a'+'\n')
 			else:
-				print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position]))
+				if maxstddev-minstddev!=0:
+					print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position]))
+					fp.write(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+'\n')
+				else:
+					print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: n/a')
+					fp(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: n/a'+'\n')
 			i+=1
 
 	for noshift in noshifts:
 		print('no shifts were predicted for '+str(smiles[noshift])+' and we cannot say anything about it!')
+	fp.close()

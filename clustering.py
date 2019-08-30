@@ -86,7 +86,7 @@ def cluster2dspectrum(cp, project):
 	#				print(str(peak1[0])+'->'+str(peak2[0]))
 
 
-	f=open(datapath+os.sep+project+os.sep+cp.get('clusteringoutput'),'w')
+	f=open(datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('clusteringoutput'),'w')
 	for cluster in xclusters:
 		for peak1 in cluster:
 			for peak2 in cluster:
