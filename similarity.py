@@ -244,6 +244,8 @@ def similarity(cp, project):
 			#print(name)
 			fig = plt.figure(figsize=(30,10))
 			ax = fig.add_subplot(1,3,1)
+			ax.invert_xaxis()
+			ax.invert_yaxis()
 			ax.scatter(xsim[i][0], ysim[i][0], c='red', label='simulated hmbc', alpha=0.2, edgecolors='none', s=12)
 			if len(xreal[i][0])>0:
 				ax.scatter(xreal[i][0], yreal[i][0], c='green', label='measured assigned', alpha=0.2, edgecolors='none', s=12)
@@ -266,6 +268,8 @@ def similarity(cp, project):
 			ax.legend()
 			ax.grid(True)
 			ax = fig.add_subplot(1,3,2)
+			ax.invert_xaxis()
+			ax.invert_yaxis()
 			ax.scatter(xsim[i][1], ysim[i][1], c='red', label='simulated hsqc', alpha=0.2, edgecolors='none', s=12)
 			if len(xreal[i][1])>0:
 				ax.scatter(xreal[i][1], yreal[i][1], c='green', label='measured assigned', alpha=0.2, edgecolors='none', s=12)
@@ -300,6 +304,8 @@ def similarity(cp, project):
 			ax.grid(True)
 			if usehsqctocsy== 'true':
 				ax = fig.add_subplot(1,3,3)
+				ax.invert_xaxis()
+				ax.invert_yaxis()
 				ax.scatter(xsim[i][2], ysim[i][2], c='red', label='simulated hsqc', alpha=0.2, edgecolors='none', s=12)
 				if len(xreal[i][2])>0:
 					ax.scatter(xreal[i][2], yreal[i][2], c='green', label='measured assigned', alpha=0.2, edgecolors='none', s=12)
