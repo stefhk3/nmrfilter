@@ -69,6 +69,7 @@ def similarity(cp, project):
 	ysim=[]
 	xrealunassigned=[]
 	yrealunassigned=[]
+	linesnames=[]
 	for spectrum_simulated in spectra_simulated:
 		xreallocal=[]
 		xreallocal.append([])
@@ -235,8 +236,9 @@ def similarity(cp, project):
 		line=fp.readline().strip()
 	usehsqctocsy = cp.get('usehsqctocsy')
 	debug = cp.get('debug')
-	with open(datapath+os.sep+project+os.sep+'testallnames.txt') as f:
-		linesnames = f.read().splitlines()
+	if os.path.exists(datapath+os.sep+project+os.sep+cp.get('msmsinput')[0:len(cp.get('msmsinput'))-4]+'names.txt'):
+		with open(datapath+os.sep+project+os.sep+cp.get('msmsinput')[0:len(cp.get('msmsinput'))-4]+'names.txt') as f:
+			linesnames = f.read().splitlines()
 	#we make plot
 	i=0
 	for name in linesnames:
@@ -254,15 +256,15 @@ def similarity(cp, project):
 			yrealrest=[]
 			for peak_real in spectrum_real:
 				valuecontained=False
-			if peak_real[0] in xreal[i][0] and peak_real[1] in yreal[i][0]:
-				if xreal[i][0].index(peak_real[0])!=yreal[i][0].index(peak_real[1]):
-					valuecontained=True
-			if peak_real[0] in xrealunassigned[i][0] and peak_real[1] in yrealunassigned[i][0]:
-				if xrealunassigned[i][0].index(peak_real[0])!=yrealunassigned[i][0].index(peak_real[1]):
-					valuecontained=True
-			if not valuecontained:
-				xrealrest.append(peak_real[0])
-				yrealrest.append(peak_real[1])
+				if peak_real[0] in xreal[i][0] and peak_real[1] in yreal[i][0]:
+					if xreal[i][0].index(peak_real[0])!=yreal[i][0].index(peak_real[1]):
+						valuecontained=True
+				if peak_real[0] in xrealunassigned[i][0] and peak_real[1] in yrealunassigned[i][0]:
+					if xrealunassigned[i][0].index(peak_real[0])!=yrealunassigned[i][0].index(peak_real[1]):
+						valuecontained=True
+				if not valuecontained:
+					xrealrest.append(peak_real[0])
+					yrealrest.append(peak_real[1])
 			if len(xrealrest)>0:
 				ax.scatter(yrealrest, xrealrest, c='red', label='measured unused', alpha=0.6, edgecolors='none', s=12)
 		ax.legend()
@@ -326,7 +328,7 @@ def similarity(cp, project):
 						xrealrest.append(peak_real[0])
 						yrealrest.append(peak_real[1])
 				if len(xrealrest)>0:
-					ax.scatter(yrealrest, xrealrest, c='grey', label='measured unused', alpha=0.6, edgecolors='none', s=12)
+					ax.scatter(yrealrest, xrealrest, c='red', label='measured unused', alpha=0.6, edgecolors='none', s=12)
 			ax.legend()
 			ax.grid(True)
 		fig.savefig(datapath+os.sep+project+os.sep+'plots'+os.sep+name+'.png', transparent=False, dpi=80, bbox_inches="tight")
@@ -337,7 +339,7 @@ def similarity(cp, project):
 	fp = open(datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('result'),'w')
 	for cost in sorted(overallcosts):
 		for position in overallcosts[cost]:
-			if debug=='true':
+			if len(linesnames)>0:
 				if maxstddev-minstddev!=0:
 					print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position]))
 					fp.write(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+'\n')
