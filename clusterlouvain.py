@@ -11,7 +11,7 @@ def Two_Column_List(file):
         for cols in mycsv:
             if len(cols)==2:
                 peaks.append([i,float(cols[0].strip()),float(cols[1].strip())])
-            i+=1
+                i+=1
     return peaks
 
 def cluster2dspectrumlouvain(cp, project):

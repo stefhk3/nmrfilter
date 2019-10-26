@@ -9,13 +9,14 @@ import matplotlib.pyplot as plt
 
 def Two_Column_List(file):
     with open(file) as input:
+        type=""
         mycsv = csv.reader(input, delimiter='\t', skipinitialspace=True)
         peaks = []
-        i=0
         for cols in mycsv:
             if len(cols)==2:
-                peaks.append([float(cols[0].strip()),float(cols[1].strip())])
-            i+=1
+                peaks.append([float(cols[0].strip()),float(cols[1].strip()),type])
+            elif len(cols)==1:
+                type=cols[0]
     return peaks
 
 def similarity(cp, project):
@@ -112,7 +113,10 @@ def similarity(cp, project):
 				ysimlocal[type].append(peak_simulated[1])
 				for peak_real in spectrum_real:
 					x=abs(peak_real[0]-peak_simulated[0])+abs((peak_real[1]-peak_simulated[1])*10)
-					cost[i][k]=x*x
+					if (type==0 and peak_real[2]=="HMBC") or (type==1 and peak_real[2]=="HSQC") or (type==2 and peak_real[2]=="HSQCTOCSY"):
+						cost[i][k]=x*x
+					else:
+						cost[i][k]=sys.float_info.max
 					#if(peak_real[0]>191 and peak_real[0]<192 and peak_real[1]>7.3 and peak_real[1]<7.5):
 					#	print(peak_real)
 					#	print(peak_simulated)
@@ -142,8 +146,8 @@ def similarity(cp, project):
 				number_of_hits=0
 				for peak in cluster_real:
 					mincost=sys.float_info.max
-					indexmin=0
-					rowmin=0
+					indexmin=-1
+					rowmin=-1
 					number_of_peaks+=1
 					i=0
 					#print(str(peak[0])+'______ '+str(peak[1]))
@@ -158,21 +162,22 @@ def similarity(cp, project):
 					#print(number_of_hits)
 					#if not found:
 						#print('no hit')
-					type=2
-					if spectrum_simulated[rowmin][2]=='b':
-						type=0
-					elif spectrum_simulated[rowmin][2]=='q':
-						type=1
-					#print(mincost)
-					#print(str(spectrum_real[col_ind[indexmin]][0])+' '+str(spectrum_real[col_ind[indexmin]][1]))
-					#print(str(spectrum_simulated[col_ind[rowmin]][0])+' '+str(spectrum_simulated[col_ind[rowmin]][1]))
-					if mincost<9:
-						number_of_hits+=1
-						xreallocal[type].append(spectrum_real[col_ind[indexmin]][0])
-						yreallocal[type].append(spectrum_real[col_ind[indexmin]][1])
-					else:
-						xreallocalunassigned[type].append(spectrum_real[col_ind[indexmin]][0])
-						yreallocalunassigned[type].append(spectrum_real[col_ind[indexmin]][1])
+					if indexmin>-1:
+						#print(mincost)
+						#print(str(spectrum_real[col_ind[indexmin]][0])+' '+str(spectrum_real[col_ind[indexmin]][1]))
+						#print(str(spectrum_simulated[col_ind[rowmin]][0])+' '+str(spectrum_simulated[col_ind[rowmin]][1]))
+						type=2
+						if spectrum_real[col_ind[indexmin]][2]=='HMBC':
+							type=0
+						elif spectrum_real[col_ind[indexmin]][2]=='HSQC':
+							type=1
+						if mincost<9:
+							number_of_hits+=1
+							xreallocal[type].append(spectrum_real[col_ind[indexmin]][0])
+							yreallocal[type].append(spectrum_real[col_ind[indexmin]][1])
+						else:
+							xreallocalunassigned[type].append(spectrum_real[col_ind[indexmin]][0])
+							yreallocalunassigned[type].append(spectrum_real[col_ind[indexmin]][1])
 				hits_clusters.append(number_of_hits/number_of_peaks)
 			#print(hits_clusters)
 			stddevs.setdefault(np.std(hits_clusters), [])
@@ -250,21 +255,22 @@ def similarity(cp, project):
 		ax.scatter(ysim[i][0], xsim[i][0], c='grey', label='simulated hmbc', alpha=0.6, edgecolors='none', s=12)
 		if len(xreal[i][0])>0:
 			ax.scatter(yreal[i][0], xreal[i][0], c='green', label='measured assigned', alpha=1, edgecolors='none', s=12)
+		ax.scatter(yrealunassigned[i][0], xrealunassigned[i][0], c='blue', label='measured unassigned closest shifts', alpha=0.6, edgecolors='none', s=12)
 		if debug=='true':
-			ax.scatter(yrealunassigned[i][0], xrealunassigned[i][0], c='blue', label='measured unassigned closest shifts', alpha=0.6, edgecolors='none', s=12)
 			xrealrest=[]
 			yrealrest=[]
 			for peak_real in spectrum_real:
-				valuecontained=False
-				if peak_real[0] in xreal[i][0] and peak_real[1] in yreal[i][0]:
-					if xreal[i][0].index(peak_real[0])!=yreal[i][0].index(peak_real[1]):
-						valuecontained=True
-				if peak_real[0] in xrealunassigned[i][0] and peak_real[1] in yrealunassigned[i][0]:
-					if xrealunassigned[i][0].index(peak_real[0])!=yrealunassigned[i][0].index(peak_real[1]):
-						valuecontained=True
-				if not valuecontained:
-					xrealrest.append(peak_real[0])
-					yrealrest.append(peak_real[1])
+				if peak_real[2] == "HMBC":
+					valuecontained=False
+					if peak_real[0] in xreal[i][0] and peak_real[1] in yreal[i][0]:
+						if xreal[i][0].index(peak_real[0])!=yreal[i][0].index(peak_real[1]):
+							valuecontained=True
+					if peak_real[0] in xrealunassigned[i][0] and peak_real[1] in yrealunassigned[i][0]:
+						if xrealunassigned[i][0].index(peak_real[0])!=yrealunassigned[i][0].index(peak_real[1]):
+							valuecontained=True
+					if not valuecontained:
+						xrealrest.append(peak_real[0])
+						yrealrest.append(peak_real[1])
 			if len(xrealrest)>0:
 				ax.scatter(yrealrest, xrealrest, c='red', label='measured unused', alpha=0.6, edgecolors='none', s=12)
 		ax.legend()
@@ -275,8 +281,8 @@ def similarity(cp, project):
 		ax.scatter(ysim[i][1], xsim[i][1], c='grey', label='simulated hsqc', alpha=0.6, edgecolors='none', s=12)
 		if len(xreal[i][1])>0:
 			ax.scatter(yreal[i][1], xreal[i][1], c='green', label='measured assigned', alpha=1, edgecolors='none', s=12)
+		ax.scatter(yrealunassigned[i][1], xrealunassigned[i][1], c='blue', label='measured unassigned closest shifts', alpha=0.6, edgecolors='none', s=12)
 		if debug=='true':
-			ax.scatter(yrealunassigned[i][1], xrealunassigned[i][1], c='blue', label='measured unassigned closest shifts', alpha=0.6, edgecolors='none', s=12)
 			xrealrest=[]
 			yrealrest=[]
 			#print(xreal[i][1])
@@ -286,19 +292,20 @@ def similarity(cp, project):
 			#print(xsim[i][1])
 			#print(ysim[i][1])
 			for peak_real in spectrum_real:
-				valuecontained=False
-				#print(peak_real)
-				#print(peak_real[0] in xrealunassigned[i][1])
-				#print(peak_real[1] in yrealunassigned[i][1])
-				if peak_real[0] in xreal[i][1] and peak_real[1] in yreal[i][1]:
-					if xreal[i][1].index(peak_real[0])!=yreal[i][1].index(peak_real[1]):
-						valuecontained=True
-				if peak_real[0] in xrealunassigned[i][1] and peak_real[1] in yrealunassigned[i][1]:
-					if xrealunassigned[i][1].index(peak_real[0])!=yrealunassigned[i][1].index(peak_real[1]):
-						valuecontained=True
-				if not valuecontained:
-					xrealrest.append(peak_real[0])
-					yrealrest.append(peak_real[1])
+				if peak_real[2] == "HSQC":
+					valuecontained=False
+					#print(peak_real)
+					#print(peak_real[0] in xrealunassigned[i][1])
+					#print(peak_real[1] in yrealunassigned[i][1])
+					if peak_real[0] in xreal[i][1] and peak_real[1] in yreal[i][1]:
+						if xreal[i][1].index(peak_real[0])!=yreal[i][1].index(peak_real[1]):
+							valuecontained=True
+					if peak_real[0] in xrealunassigned[i][1] and peak_real[1] in yrealunassigned[i][1]:
+						if xrealunassigned[i][1].index(peak_real[0])!=yrealunassigned[i][1].index(peak_real[1]):
+							valuecontained=True
+					if not valuecontained:
+						xrealrest.append(peak_real[0])
+						yrealrest.append(peak_real[1])
 			if len(xrealrest)>0:
 				ax.scatter(yrealrest, xrealrest, c='red', label='measured unused', alpha=0.6, edgecolors='none', s=12)
 				#print(xrealrest)
@@ -312,21 +319,22 @@ def similarity(cp, project):
 			ax.scatter(ysim[i][2], xsim[i][2], c='grey', label='simulated hsqc', alpha=0.6, edgecolors='none', s=12)
 			if len(xreal[i][2])>0:
 				ax.scatter(yreal[i][2], xreal[i][2], c='green', label='measured assigned', alpha=1, edgecolors='none', s=12)
+			ax.scatter(yrealunassigned[i][2], xrealunassigned[i][2], c='blue', label='measured unassigned closest shifts', alpha=0.6, edgecolors='none', s=12)
 			if debug=='true':
-				ax.scatter(yrealunassigned[i][2], xrealunassigned[i][2], c='blue', label='measured unassigned closest shifts', alpha=0.6, edgecolors='none', s=12)
 				xrealrest=[]
 				yrealrest=[]
 				for peak_real in spectrum_real:
-					valuecontained=False
-					if peak_real[0] in xreal[i][2] and peak_real[1] in yreal[i][2]:
-						if xreal[i][2].index(peak_real[0])!=yreal[i][2].index(peak_real[1]):
-							valuecontained=True
-					if peak_real[0] in xrealunassigned[i][2] and peak_real[1] in yrealunassigned[i][2]:
-						if xrealunassigned[i][2].index(peak_real[0])!=yrealunassigned[i][2].index(peak_real[1]):
-							valuecontained=True
-					if not valuecontained:
-						xrealrest.append(peak_real[0])
-						yrealrest.append(peak_real[1])
+					if peak_real[2] == "HSQCTOCSY":
+						valuecontained=False
+						if peak_real[0] in xreal[i][2] and peak_real[1] in yreal[i][2]:
+							if xreal[i][2].index(peak_real[0])!=yreal[i][2].index(peak_real[1]):
+								valuecontained=True
+						if peak_real[0] in xrealunassigned[i][2] and peak_real[1] in yrealunassigned[i][2]:
+							if xrealunassigned[i][2].index(peak_real[0])!=yrealunassigned[i][2].index(peak_real[1]):
+								valuecontained=True
+						if not valuecontained:
+							xrealrest.append(peak_real[0])
+							yrealrest.append(peak_real[1])
 				if len(xrealrest)>0:
 					ax.scatter(yrealrest, xrealrest, c='red', label='measured unused', alpha=0.6, edgecolors='none', s=12)
 			ax.legend()
