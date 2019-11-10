@@ -116,7 +116,7 @@ def similarity(cp, project):
 					if (type==0 and peak_real[2]=="HMBC") or (type==1 and peak_real[2]=="HSQC") or (type==2 and peak_real[2]=="HSQCTOCSY"):
 						cost[i][k]=x*x
 					else:
-						cost[i][k]=sys.float_info.max
+						cost[i][k]=sys.float_info.max/50
 					#if(peak_real[0]>191 and peak_real[0]<192 and peak_real[1]>7.3 and peak_real[1]<7.5):
 					#	print(peak_real)
 					#	print(peak_simulated)
@@ -218,12 +218,15 @@ def similarity(cp, project):
 		if stddev>maxstddev:
 			maxstddev=stddev
 		stdsum=stdsum+len(stddevs[stddev])
-	#print(costsum, stdsum)
+	#print(maxcost,costsum, stdsum)
 	costspercompound_norm = {}
 	stddevspercompound_norm = {}
 	overallcosts={}
 	for i in costspercompound:
-		costspercompound_norm[i]=(costspercompound[i]-mincost)/(maxcost-mincost)
+		if maxcost-mincost!=0:
+			costspercompound_norm[i]=(costspercompound[i]-mincost)/(maxcost-mincost)
+		else:
+			costspercompound_norm[i]=1
 		if maxstddev-minstddev!=0:
 			stddevspercompound_norm[i]=(stddevspercompound[i]-minstddev)/(maxstddev-minstddev)
 			overallcosts.setdefault((costspercompound_norm[i]+(1-stddevspercompound_norm[i]))/2, [])
