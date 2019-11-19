@@ -116,7 +116,7 @@ def similarity(cp, project):
 					if (type==0 and peak_real[2]=="HMBC") or (type==1 and peak_real[2]=="HSQC") or (type==2 and peak_real[2]=="HSQCTOCSY"):
 						cost[i][k]=x*x
 					else:
-						cost[i][k]=sys.float_info.max/50
+						cost[i][k]=sys.float_info.max/10000
 					#if(peak_real[0]>191 and peak_real[0]<192 and peak_real[1]>7.3 and peak_real[1]<7.5):
 					#	print(peak_real)
 					#	print(peak_simulated)
