@@ -257,10 +257,10 @@ def similarity(cp, project):
 			ax = fig.add_subplot(1,3,1)
 			ax.invert_xaxis()
 			ax.invert_yaxis()
-			ax.scatter(ysim[i][0], xsim[i][0], c='grey', label='simulated hmbc', alpha=0.6, edgecolors='none', s=12)
+			ax.scatter(ysim[i][0], xsim[i][0], c='grey', label='simulated hmbc ('+str(len(ysim[i][0]))+')', alpha=0.6, edgecolors='none', s=12)
 			if len(xreal[i][0])>0:
-				ax.scatter(yreal[i][0], xreal[i][0], c='green', label='measured assigned', alpha=1, edgecolors='none', s=12)
-			ax.scatter(yrealunassigned[i][0], xrealunassigned[i][0], c='blue', label='measured unassigned closest shifts', alpha=0.6, edgecolors='none', s=12)
+				ax.scatter(yreal[i][0], xreal[i][0], c='green', label='measured assigned ('+str(len(yreal[i][0]))+')', alpha=1, edgecolors='none', s=12)
+			ax.scatter(yrealunassigned[i][0], xrealunassigned[i][0], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][0]))+')', alpha=0.6, edgecolors='none', s=12)
 			if debug=='true':
 				xrealrest=[]
 				yrealrest=[]
@@ -277,16 +277,16 @@ def similarity(cp, project):
 							xrealrest.append(peak_real[0])
 							yrealrest.append(peak_real[1])
 				if len(xrealrest)>0:
-					ax.scatter(yrealrest, xrealrest, c='red', label='measured unused', alpha=0.6, edgecolors='none', s=12)
+					ax.scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.6, edgecolors='none', s=12)
 			ax.legend()
 			ax.grid(True)
 		ax = fig.add_subplot(1,3,2)
 		ax.invert_xaxis()
 		ax.invert_yaxis()
-		ax.scatter(ysim[i][1], xsim[i][1], c='grey', label='simulated hsqc', alpha=0.6, edgecolors='none', s=12)
+		ax.scatter(ysim[i][1], xsim[i][1], c='grey', label='simulated hsqc ('+str(len(ysim[i][1]))+')', alpha=0.6, edgecolors='none', s=12)
 		if len(xreal[i][1])>0:
-			ax.scatter(yreal[i][1], xreal[i][1], c='green', label='measured assigned', alpha=1, edgecolors='none', s=12)
-		ax.scatter(yrealunassigned[i][1], xrealunassigned[i][1], c='blue', label='measured unassigned closest shifts', alpha=0.6, edgecolors='none', s=12)
+			ax.scatter(yreal[i][1], xreal[i][1], c='green', label='measured assigned ('+str(len(yreal[i][1]))+')', alpha=1, edgecolors='none', s=12)
+		ax.scatter(yrealunassigned[i][1], xrealunassigned[i][1], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][1]))+')', alpha=0.6, edgecolors='none', s=12)
 		if debug=='true':
 			xrealrest=[]
 			yrealrest=[]
@@ -312,7 +312,7 @@ def similarity(cp, project):
 						xrealrest.append(peak_real[0])
 						yrealrest.append(peak_real[1])
 			if len(xrealrest)>0:
-				ax.scatter(yrealrest, xrealrest, c='red', label='measured unused', alpha=0.6, edgecolors='none', s=12)
+				ax.scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.6, edgecolors='none', s=12)
 				#print(xrealrest)
 				#print(yrealrest)
 		ax.legend()
@@ -321,10 +321,10 @@ def similarity(cp, project):
 			ax = fig.add_subplot(1,3,3)
 			ax.invert_xaxis()
 			ax.invert_yaxis()
-			ax.scatter(ysim[i][2], xsim[i][2], c='grey', label='simulated hsqc', alpha=0.6, edgecolors='none', s=12)
+			ax.scatter(ysim[i][2], xsim[i][2], c='grey', label='simulated hsqc ('+str(len(ysim[i][2]))+')', alpha=0.6, edgecolors='none', s=12)
 			if len(xreal[i][2])>0:
-				ax.scatter(yreal[i][2], xreal[i][2], c='green', label='measured assigned', alpha=1, edgecolors='none', s=12)
-			ax.scatter(yrealunassigned[i][2], xrealunassigned[i][2], c='blue', label='measured unassigned closest shifts', alpha=0.6, edgecolors='none', s=12)
+				ax.scatter(yreal[i][2], xreal[i][2], c='green', label='measured assigned ('+str(len(yreal[i][2]))+')', alpha=1, edgecolors='none', s=12)
+			ax.scatter(yrealunassigned[i][2], xrealunassigned[i][2], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][2]))+')', alpha=0.6, edgecolors='none', s=12)
 			if debug=='true':
 				xrealrest=[]
 				yrealrest=[]
@@ -341,7 +341,7 @@ def similarity(cp, project):
 							xrealrest.append(peak_real[0])
 							yrealrest.append(peak_real[1])
 				if len(xrealrest)>0:
-					ax.scatter(yrealrest, xrealrest, c='red', label='measured unused', alpha=0.6, edgecolors='none', s=12)
+					ax.scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.6, edgecolors='none', s=12)
 			ax.legend()
 			ax.grid(True)
 		fig.savefig(datapath+os.sep+project+os.sep+'plots'+os.sep+name+'.png', transparent=False, dpi=80, bbox_inches="tight")
