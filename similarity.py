@@ -352,19 +352,25 @@ def similarity(cp, project):
 	fp = open(datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('result'),'w')
 	for cost in sorted(overallcosts):
 		for position in overallcosts[cost]:
+			matchingrate=''
+			if usehmbc!= 'false':
+				matchingrate=matchingrate+', matching rate: '+str(len(yreal[position][0]))+'/'+str(len(ysim[position][0]))+', '+str((len(yreal[position][0])/len(ysim[position][0]))*100)+'% (HMBC)'
+			matchingrate=matchingrate+', matching rate: '+str(len(yreal[position][1]))+'/'+str(len(ysim[position][1]))+', '+str((len(yreal[position][1])/len(ysim[position][1]))*100)+'% (HSQC)'
+			if usehsqctocsy== 'true':
+				matchingrate=matchingrate+', matching rate: '+str(len(yreal[position][2]))+'/'+str(len(ysim[position][2]))+', '+str((len(yreal[position][2])/len(ysim[i][2]))*100)+'% (HSQC-TOCSY)'
 			if len(linesnames)>0:
 				if maxstddev-minstddev!=0:
-					print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position]))
-					fp.write(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+'\n')
+					print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate)
+					fp.write(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate+'\n')
 				else:
-					print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation:  n/a')
-					fp.write(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation:  n/a'+'\n')
+					print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation:  n/a'+matchingrate)
+					fp.write(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation:  n/a'+matchingrate+'\n')
 			else:
 				if maxstddev-minstddev!=0:
-					print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position]))
-					fp.write(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+'\n')
+					print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate)
+					fp.write(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate+'\n')
 				else:
-					print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: n/a')
+					print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: n/a'+matchingrate)
 					fp(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: n/a'+'\n')
 			i+=1
 
