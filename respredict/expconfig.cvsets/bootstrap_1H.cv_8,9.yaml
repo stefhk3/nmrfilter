@@ -1,0 +1,91 @@
+exp_data:
+  data:
+  - filename: processed_data/nmrshiftdb_128_128_HCONFSPCl_1H.shifts.dataset.pickle
+    phase: train
+    subsample_to: 30000
+  - filename: processed_data/nmrshiftdb_128_128_HCONFSPCl_1H.shifts.dataset.pickle
+    phase: test
+
+  extra_data: []
+  filter_max_n: 0
+  cv_split:
+    how: morgan_fingerprint_mod
+    mod: 10
+    test:
+    - 8
+    - 9
+
+tblogdir: tblogs.simple
+
+net_name: nets.GraphVertConfigBootstrapWithMultiMax
+
+net_params:
+  init_noise: 0.0
+  init_bias: 0.0
+  resnet: true
+  int_d: 256
+  layer_n: 8
+  agg_func: goodmax
+  gml_class: GraphMatLayers
+  gml_config:
+    layer_class: GraphMatLayerExpression
+    layer_config:
+      dropout: 0.01
+      per_nonlin:
+      nonlin:
+      norm_by_neighbors: true
+      cross_term_agg_func: sum
+      terms:
+      - power: 1
+        diag: false
+      - power: 3
+        diag: true
+      - power: 2
+        diag: false
+
+  force_lin_init: true
+  g_feature_n: -1
+  resnet_out: true
+  out_std: false
+  inner_norm: batch
+  input_norm: batch
+  resnet_blocks: [3]
+  resnet_d: 128
+  mixture_n: 10
+  mixture_num_obs_per: 5
+  out_std_exp: false
+  OUT_DIM: 1  # update
+  use_random_subsets: false
+
+batch_size: 64
+
+tgt_max_n: 128
+
+spectra_nucs: [1H]
+
+opt_params:
+  optimizer: adam
+  lr: 5.0e-4
+  scheduler_gamma: 0.95
+  eps: 1.0e-8
+  scheduler_step_size: 10
+
+
+seed: 1234
+
+dataset_hparams:
+  use_default: true
+  feat_vect_args:
+    mmff_atom_types_onehot: true
+    feat_atomicno: false
+  adj_args:
+    add_identity: false
+    norm_adj: false
+
+
+loss_params:
+  loss_name: NoUncertainLoss
+  norm: huber
+  scale: 1.0
+
+max_epochs: 4000

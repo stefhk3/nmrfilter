@@ -1,0 +1,105 @@
+exp_data:
+  data :
+    - filename: 'processed_data/nmrshiftdb_128_128_HCONFSPCl_13C.shifts.dataset.pickle'
+      phase: train
+      subsample_to: 30000
+      filter_max_n : 64
+    - filename: 'processed_data/nmrshiftdb_128_128_HCONFSPCl_13C.shifts.dataset.pickle'
+      phase: test
+      filter_max_n : 64
+
+  extra_data : []
+  filter_max_n: 0
+  cv_split :
+    how: morgan_fingerprint_mod
+    mod : 10
+    test : [0, 1]
+
+net_name: nets.GraphWithUncertainty
+
+net_params:
+  init_noise : 0.00
+  init_bias : 0.01
+  resnet : True
+  var_func: softplus
+  int_d :  256
+  common_layer_n : 3
+  split_layer_n : 3
+  agg_func : goodmax
+  gml_class: GraphMatLayers
+  gml_config:
+    layer_class: GraphMatLayerExpression
+    layer_config:
+      dropout: 0.05
+      per_nonlin: null
+      nonlin: null
+      norm_by_neighbors: True
+      cross_term_agg_func: sum
+      terms:
+        -
+          power: 1
+          diag: False
+        -
+          power: 3
+          diag: True
+        -
+          power: 2
+          diag: False
+  force_lin_init : True
+  g_feature_n : -1 
+  resnet_out : True 
+  out_std : False 
+  inner_norm : batch
+  input_norm : batch
+  resnet_blocks : [3]
+  resnet_d: 256
+  out_std_exp : False 
+  OUT_DIM : 1 
+  use_random_subsets: False
+
+batch_size: 128
+
+tgt_max_n: 64
+
+spectra_nucs : ['13C']
+
+opt_params:
+  optimizer : adam 
+  lr : 1.0e-3
+  scheduler_gamma : 0.8
+  eps : 1.0e-8
+  scheduler_step_size : 10
+  weight_decay: 0
+    
+seed : 1234
+
+dataset_hparams:
+  use_default: True
+  feat_vect_args:
+    mmff_atom_types_onehot : True 
+    # feat_atomicno: False
+    # hybridization: False
+    # rings: False
+    # formal_charge: False
+    # aromatic: False
+    # feat_atomicno: False
+    # default_valence: False
+    # total_valence_onehot: False
+    # partial_charge: False
+    
+  adj_args:
+    edge_weighted: False
+    edge_bin : True
+    add_identity: True
+    norm_adj : True
+
+loss_params:
+  loss_name : UncertainLoss
+  norm : 'huber'
+  std_pow : 1.0
+  use_reg_log: True
+  std_weight: 100.0
+  std_regularize: 0.001
+
+max_epochs: 4000
+

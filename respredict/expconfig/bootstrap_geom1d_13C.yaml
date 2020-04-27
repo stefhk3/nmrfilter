@@ -1,0 +1,63 @@
+### Bootstrap graph vert model but with extra geometry data concatenated as
+### per-vertex data 
+
+exp_data:
+  filename : '../nmrdata/processed_data/nmrshiftdb_64_64_HCONFSPCl_13C.shifts.dataset.pickle'
+  extra_data :
+    -
+      name : geom_radial
+      combine_with : vert
+      fileglob : features.geom/features.mmff94_64_opt1000_4_p01-near_bp_radial.dir/{molecule_id}.npy
+
+net_name: nets.GraphVertModelBootstrap
+
+net_params:
+  init_noise : 0.0 
+  resnet : True 
+  int_d :  128 # 2048 
+  layer_n : 8 # 10 
+  GS : 4 
+  agg_func : goodmax 
+  force_lin_init : True 
+  g_feature_n : -1 
+  resnet_out : True 
+  out_std : False 
+  batchnorm : True 
+  input_batchnorm : True 
+  graph_dropout : 0.0 
+  resnet_blocks : [3,]
+  resnet_d: 128
+  mixture_n: 10
+  out_std_exp : False 
+  OUT_DIM : 1 # update
+  use_random_subsets: False
+
+batch_size: 128
+
+tgt_max_n: 64 
+
+spectra_nucs : ['13C']
+
+opt_params:
+  optimizer : adam 
+  lr : 1.0e-4 
+  scheduler_gamma : 0.95 
+  eps : 1.0e-8 
+  scheduler_step_size : 100
+  
+    
+seed : 1234
+
+dataset_hparams:
+  use_default: True
+  feat_vect_args:
+    mmff_atom_types_onehot : True
+    feat_atomicno: False
+
+
+loss_params:
+  loss_name : NoUncertainLoss
+  norm : huber
+  scale : 1.0
+
+max_epochs: 6000

@@ -1,0 +1,9 @@
+psycopg2
+numpy
+sqlalchemy
+pandas
+scikit-learn
+lxml
+tqdm
+ruffus
+

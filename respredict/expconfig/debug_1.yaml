@@ -1,0 +1,60 @@
+exp_data:
+  filename : '../nmrdata/processed_data/nmrshiftdb_64_64_HCONFSPCl_1H.shifts.dataset.pickle'
+  extra_data : []
+
+net_name: nets.GraphVertModelBootstrap
+
+net_params:
+  init_noise : 0.0 
+  resnet : True 
+  int_d :  128 # 2048 
+  layer_n : 8 # 10 
+  GS : 4 
+  agg_func : goodmax 
+  force_lin_init : True 
+  g_feature_n : -1 
+  resnet_out : True 
+  out_std : False 
+  batchnorm : True 
+  input_batchnorm : True 
+  graph_dropout : 0.0 
+  resnet_blocks : [3,]
+  resnet_d: 128 
+  mixture_n : 10 
+  out_std_exp : False 
+  OUT_DIM : 1 # update
+  use_random_subsets : False 
+
+batch_size: 32
+
+tgt_max_n: 64 
+
+spectra_nucs : ['1H']
+
+opt_params:
+  optimizer : adam 
+  #amsgrad : False 
+  lr : 1.0e-4 
+  #weight_decay : 1e-5 
+  scheduler_gamma : 0.95 
+  #momentum : 0.9
+  eps : 1.0e-8 
+  scheduler_step_size : 100
+
+  
+    
+seed : 1234
+
+dataset_hparams:
+  use_default: True
+  feat_vect_args:
+    mmff_atom_types_onehot : True
+    feat_atomicno: False
+
+
+loss_params:
+  loss_name : NoUncertainLoss
+  norm : huber
+  scale : 1.0
+
+max_epochs: 4000

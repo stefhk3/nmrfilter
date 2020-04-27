@@ -1,0 +1,25 @@
+channels:
+  - rdkit
+  - pytorch
+dependencies:
+  - python=3.7
+  - anaconda
+  - rdkit
+  - pytorch=1.4
+  - torchvision
+  - pandas
+  - seaborn
+  - scikit-learn
+  - pyarrow
+  - numba
+  - click
+  - pip
+  - pip:
+    - python-igraph
+    - ruffus
+    - tqdm
+    - networkx
+    - tensorflow-cpu
+    - tensorboardX
+    - cirpy    
+    - pubchempy

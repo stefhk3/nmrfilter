@@ -1,0 +1,55 @@
+exp_data:
+  filename : '../nmrdata/processed_data/nmrshiftdb_64_64_HCONFSPCl_13C.shifts.dataset.pickle'
+  extra_data : []
+
+net_name: nets.SGCModel
+
+net_params:
+  init_noise : 0.0 
+  resnet : True 
+  int_d :  512 # 2048 
+  GS : 6
+  agg_func : goodmax 
+  force_lin_init : True 
+  g_feature_n : -1 
+  resnet_out : True 
+  out_std : False 
+  input_batchnorm : True 
+  graph_dropout : 0.0 
+  resnet_blocks : [3,]
+  resnet_d: 128 
+  out_std_exp : False 
+  OUT_DIM : 1 # update
+
+batch_size: 128
+
+tgt_max_n: 64 
+
+spectra_nucs : ['13C']
+
+opt_params:
+  optimizer : adam 
+  lr : 1.0e-4 
+  scheduler_gamma : 0.95 
+  eps : 1.0e-8 
+  scheduler_step_size : 100
+  
+    
+seed : 1234
+
+dataset_hparams:
+  use_default: True
+  feat_vect_args:
+    mmff_atom_types_onehot : True
+    feat_atomicno: False
+  adj_args:
+    mat_power : [1, 2, 3, 4, 6, 8]
+    split_weights : ~
+    edge_weighted : True
+
+loss_params:
+  loss_name : NoUncertainLoss
+  norm : huber
+  scale : 0.1
+
+max_epochs: 4000

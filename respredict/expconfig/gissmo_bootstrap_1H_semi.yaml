@@ -1,0 +1,116 @@
+exp_data:
+  data :
+    - filename: 'processed_data/gissmo_128_128_HCONFSPCl_1H.shifts.dataset.pickle'
+      phase: train
+      filter_max_n : 64
+    - filename: 'processed_data/gissmo_128_128_HCONFSPCl_1H.shifts.dataset.pickle'
+      phase: test
+      filter_max_n : 64
+    - filename: 'processed_data/pubchem_128_128_HCONFSPCl_10.shifts.dataset.pickle'
+      phase: train
+      filter_max_n : 64
+      frac_per_epoch: 0.01
+      force_tgt_nucs: 1
+     
+  extra_data : []
+  
+  filter_max_n: 0
+  cv_split :
+    how: morgan_fingerprint_mod
+    mod : 10
+    test : [0, 1]
+
+tblogdir: tblogs.simple
+    
+net_name: seminets.SemiNet2
+
+net_params:
+  encode_class: GraphVertConfigBootstrap
+  encode_config:
+    init_noise : 0.0
+    init_bias : 0.0
+    resnet : True
+    int_d :  128
+    layer_n : 8
+    agg_func : goodmax
+    gml_class: GraphMatLayers
+    gml_config:
+      layer_class: GraphMatLayerExpression
+      layer_config:
+        dropout: 0.05
+        per_nonlin: null
+        nonlin: null
+        norm_by_neighbors: False
+        cross_term_agg_func: sum
+        terms:
+          -
+            power: 1
+            diag: False
+          # -
+          #   power: 3
+          #   diag: True
+          # -
+          #   power: 2
+          #   diag: False
+    force_lin_init : True
+    resnet_out : True 
+    out_std : False 
+    inner_norm : batch
+    input_norm : batch
+    resnet_blocks : [3]
+    resnet_d: 128
+    mixture_n: 10
+    out_std_exp : False 
+    OUT_DIM : 1 
+    use_random_subsets: False
+  decode_class : Decode5
+  decode_config:
+    out_transform: sigmoid
+    input_dropout_p: 0.5
+    D : 128
+    output_feat: 4
+
+batch_size: 128
+
+tgt_max_n: 64
+
+spectra_nucs : ['1H']
+
+opt_params:
+  optimizer : adam 
+  lr : 1.0e-3
+  scheduler_gamma : 0.90
+  eps : 1.0e-8
+  scheduler_step_size : 10
+  
+    
+seed : 1234
+
+dataset_hparams:
+  use_default: True
+  feat_vect_args:
+    mmff_atom_types_onehot : True
+    feat_atomicno: True
+  adj_args:
+    edge_weighted: False
+    edge_bin : True
+  feat_edge_args:
+    is_in_ring: True
+    is_in_ring_size: [3,4,5,6,7,8,9]
+    add_identity: False
+    norm_mat: False
+    #feat_r_pow: [1, 2, 3]
+    #edge_type_tuples: [(1, 6), (1, 7), (1, 8)]
+  other_args:
+    combine_mat_feat_adj: True
+    
+loss_params:
+  loss_name : ReconLoss
+  pred_norm : huber
+  pred_scale : 1.0
+  pred_loss_weight: 1.0
+  recon_loss_weight : 100.0
+  recon_loss_name: nn.MSELoss
+
+max_epochs: 4000
+

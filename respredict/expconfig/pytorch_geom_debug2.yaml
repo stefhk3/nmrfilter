@@ -1,0 +1,48 @@
+exp_data:
+  filename : '../nmrdata/processed_data/nmrshiftdb_64_64_HCONFSPCl_13C.shifts.dataset.pickle'
+  extra_data : []
+  train_sample_max : 0
+
+net_name: geomnets.NNEdgeAttrs
+
+net_params:
+  init_noise : 0.0 
+  int_d :  256
+  GS: 4
+  layer_n : 4 
+#  force_lin_init : True 
+#  dropout: 0.1
+  
+batch_size: 32
+
+tgt_max_n: 64 
+
+spectra_nucs : ['13C']
+
+opt_params:
+  optimizer : adam 
+  lr : 1.0e-4
+  scheduler_gamma : 0.95 
+  eps : 1.0e-8 
+  scheduler_step_size : 100
+  
+    
+seed : 1234
+
+dataset_hparams:
+  use_default: True
+  feat_vect_args:
+    mmff_atom_types_onehot : True
+    feat_atomicno: False
+    partial_charge: False
+  adj_args:
+    norm_adj: False
+    add_identity: False
+
+
+loss_params:
+  loss_name : NoUncertainLoss
+  norm : huber
+  scale : 1.0
+
+max_epochs: 4000

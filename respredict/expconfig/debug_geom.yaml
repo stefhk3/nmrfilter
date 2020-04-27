@@ -1,0 +1,52 @@
+exp_data:
+  filename : '../nmrdata/processed_data/nmrshiftdb_64_64_HCONFSPCl_13C.shifts.dataset.pickle'
+  extra_data :
+    -
+      name : geom_radial
+      combine_with : vert
+      fileglob : features.geom/features.mmff94_64_opt1000_4_p01-near_bp_radial.dir/{molecule_id}.npy
+      
+net_name: nets.PredVertOnly
+
+net_params:
+  init_noise : 0.0
+  resnet : True 
+  int_d :  2048 #  2048 
+  force_lin_init : True 
+  g_feature_n : -1 
+  resnet_out : True
+  input_batchnorm: False
+  use_batchnorm: False
+  out_std : False 
+  resnet_blocks : [2,2,2]
+  resnet_d: 2048
+  OUT_DIM : 1 # update
+
+batch_size: 128
+
+tgt_max_n: 64 
+
+spectra_nucs : ['13C']
+
+opt_params:
+  optimizer : adam 
+  lr : 1.0e-4
+  scheduler_gamma : 0.95 
+  eps : 1.0e-8 
+  scheduler_step_size : 10
+  
+    
+seed : 1234
+
+dataset_hparams:
+  use_default: True
+  feat_vect_args:
+    mmff_atom_types_onehot : True
+    feat_atomicno: False
+
+loss_params:
+  loss_name : NoUncertainLoss
+  norm : huber
+  scale : 0.1
+
+max_epochs: 4000

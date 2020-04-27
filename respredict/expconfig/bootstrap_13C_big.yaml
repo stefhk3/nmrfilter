@@ -1,0 +1,66 @@
+exp_data:
+  data :
+    - filename: 'processed_data/nmrshiftdb_128_128_HCONFSPCl_13C.shifts.dataset.pickle'
+      phase: train
+    - filename: 'processed_data/nmrshiftdb_128_128_HCONFSPCl_13C.shifts.dataset.pickle'
+      phase: test
+     
+  extra_data : []
+  
+  filter_max_n: 0
+  cv_split :
+    how: morgan_fingerprint_mod
+    mod : 10
+    test : [0, 1]
+
+net_name: nets.GraphVertModelBootstrap
+
+net_params:
+  init_noise : 0.0 
+  resnet : True 
+  int_d :  256
+  layer_n : 8 
+  GS : 4 
+  agg_func : goodmax 
+  force_lin_init : True 
+  g_feature_n : -1 
+  resnet_out : True 
+  out_std : False 
+  norm: batch
+  input_batchnorm : True 
+  resnet_blocks : [3,]
+  resnet_d: 128
+  mixture_n: 10
+  out_std_exp : False 
+  OUT_DIM : 1 
+  use_random_subsets: False
+
+batch_size: 256
+
+tgt_max_n: 128
+
+spectra_nucs : ['13C']
+
+opt_params:
+  optimizer : adam 
+  lr : 1.0e-4 
+  scheduler_gamma : 0.95 
+  eps : 1.0e-8 
+  scheduler_step_size : 100
+  
+    
+seed : 1234
+
+dataset_hparams:
+  use_default: True
+  feat_vect_args:
+    mmff_atom_types_onehot : True
+    feat_atomicno: False
+
+
+loss_params:
+  loss_name : NoUncertainLoss
+  norm : huber
+  scale : 1.0
+
+max_epochs: 4000

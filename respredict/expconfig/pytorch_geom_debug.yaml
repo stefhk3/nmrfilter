@@ -1,0 +1,88 @@
+exp_data:
+  data :
+    - filename: 'processed_data/sdbs_debug_1H_cdcl.pickle'
+      phase: train
+      subsample_to: 30000
+      filter_max_n : 64
+      spect_assign: False
+    # - filename: 'processed_data/nmrshiftdb_128_128_HCONFSPCl_1H.shifts.dataset.pickle'
+    #   phase: train
+    #   filter_max_n : 64
+    #   spect_assign: False
+    - filename: 'processed_data/sdbs_debug_1H_cdcl.pickle'
+      phase: test
+      filter_max_n : 64
+      spect_assign: False
+      
+  extra_data : []
+  filter_max_n: 0
+  cv_split :
+    how: morgan_fingerprint_mod
+    mod : 10
+    test : [0, 1]
+
+
+dataloader_func: geomnets.create_dl_wrapper
+
+tblogdir: tblogs.simple
+
+net_name: geomnets.GIN
+
+net_params:
+  init_noise : 0.0
+  MAX_N: 64
+  int_d : 64
+  mixture_n: 10
+  layer_n: 16
+  train_eps: True
+  #mixture_n : 10
+  #out_norm: layer
+  #force_lin_init : True
+  #num_stacks: 1
+  #num_layers: 8
+  #dropout: 0.6
+  #inner_norm: batch
+
+batch_size: 128
+
+tgt_max_n: 64
+
+spectra_nucs : ['1H']
+
+opt_params:
+  optimizer : adam
+  lr : 1.0e-4
+  scheduler_gamma : 0.95
+  #eps : 1.0e-8 
+  scheduler_step_size : 10
+  #weight_decay: 1.0e-5
+  
+    
+seed : 1234
+
+dataset_hparams:
+  use_default: True
+  combine_mat_vect: False
+  feat_vect_args:
+    mmff_atom_types_onehot : True
+    feat_atomicno: True
+  adj_args:
+    norm_adj: False
+    add_identity: False
+    
+  # other_args:
+  #   combine_mat_feat_adj : True
+  # feat_mat_args:
+  #   feat_distances: False
+  #   feat_r_pow: [-2]
+  #   mmff_opt_conf: True
+  #   add_identity: False
+  #   norm_mat: True
+
+loss_params:
+  loss_name : PermMinLoss
+#  loss_name : NoUncertainLoss
+  norm : huber
+  scale : 1.0
+
+max_epochs: 4000

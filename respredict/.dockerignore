@@ -1,0 +1,4 @@
+*
+!*.py
+!environment.yml
+!models
