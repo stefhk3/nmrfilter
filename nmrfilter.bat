@@ -1,5 +1,5 @@
-python3 nmrfilter.py $1
-java -cp "./*" uk.ac.dmu.simulate.Convert $1 > temp.txt
+python3 nmrfilter.py %1
+java -cp "./*" uk.ac.dmu.simulate.Convert %1 > temp.txt
 set /p OUT=<temp.txt
 IF "%OUT%"=="true" (
     cd respredict
@@ -9,5 +9,5 @@ IF "%OUT%"=="true" (
     conda deactivate
     cd ..
 )
-java -cp "./*" uk.ac.dmu.simulate.Simulate $1
-python3 nmrfilter2.py $1
+java -cp "./*" uk.ac.dmu.simulate.Simulate %1
+python3 nmrfilter2.py %1
