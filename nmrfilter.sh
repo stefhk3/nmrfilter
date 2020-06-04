@@ -5,8 +5,8 @@ if [ $out = 'true' ]
 then
     cd respredict
     conda activate respredict
-    python predict_standalone.py --filename ../../nmrfilterprojects/artificial/testall.sdf --format sdf --nuc 13C --sanitize --addhs false > ../../nmrfilterprojects/artificial/predc.json
-    python predict_standalone.py --filename ../../nmrfilterprojects/artificial/testall.sdf --format sdf --nuc 1H --sanitize --addhs false > ../../nmrfilterprojects/artificial/predh.json
+    python predict_standalone.py --filename ../../nmrfilterprojects/$1/testall.sdf --format sdf --nuc 13C --sanitize --addhs false > ../../nmrfilterprojects/$1/predc.json
+    python predict_standalone.py --filename ../../nmrfilterprojects/$1/testall.sdf --format sdf --nuc 1H --sanitize --addhs false > ../../nmrfilterprojects/$1/predh.json
     conda deactivate
     cd ..
 fi
