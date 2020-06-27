@@ -16,6 +16,10 @@ pip3 install louvain
 
 Notice igraph is a different library. If install python-igraph gives an error about missing C libraries, try using a wheel, following https://stackoverflow.com/questions/34113151/how-to-install-igraph-for-python-on-windows
 
+#Use of respredict
+
+If you want to use the respredict prediction (https://jcheminf.biomedcentral.com/articles/10.1186/s13321-019-0374-3) giving better results, you need to install more packages. The easiest way is to use the two yaml files environment-cpu.yml (for usage of the CPU only) or environment.yml (for using the GPU). They use Anaconda to install an environment. The command is `conda env create --name nmrfilter -f environment.cpu.yaml` respectively `conda env create --name nmrfilter -f environment.yaml`. You can then activate the environment with `conda activate nmrfilter`.
+
 #Running
 
 The program works on projects, where each project is a folder. It must contain the required files (see below) and any results will be written to it. If you checkout the repository https://github.com/stefhk3/nmrfilterprojects you can use this as example projects.
@@ -33,3 +37,4 @@ The following features are optional:
 * You can include HSQCTOCSY shifts. For this, set `usehsqctocsy=true` and include the HSQCTOSY shifts in the `spectruminput` file.
 * You can produce some debug output by setting `debug=true`. You need a file called `testallnames.txt` for this, which has the names of the compounds in the same order as in the `msmsinput` file.
 * You can set paraemteres for tolerances and resolutions. Normally these do not need to be modified. 
+* With `usedeeplearning=true` you can activate the respredict prediction (https://jcheminf.biomedcentral.com/articles/10.1186/s13321-019-0374-3) instead of the HOSE code based one. This gives better results, but requires the installation as described above. 

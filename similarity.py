@@ -350,30 +350,50 @@ def similarity(cp, project):
 		
 	i=0
 	fp = open(datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('result'),'w')
+	fpcsv = open(datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('result')+'.csv','w')
+	if len(linesnames)>0:
+		fpcsv.write('ID\tsmiles\tname\tdistance\tstandard deviation')
+	else:
+		fpcsv.write('ID\tsmiles\tdistance\tstandard deviation')
+	if usehmbc!= 'false':
+		fpcsv.write('\tmatching rate (HMBC)\t')
+	fpcsv.write('\tmatching rate (HSQC)\t')
+	if usehsqctocsy== 'true':
+		fpcsv.write('\tmatching rate (HSQC-TOCSY)\t')
+	fpcsv.write('\n')
 	for cost in sorted(overallcosts):
 		for position in overallcosts[cost]:
 			matchingrate=''
+			matchingratecsv=''
 			if usehmbc!= 'false':
 				matchingrate=matchingrate+', matching rate: '+str(len(yreal[position][0]))+'/'+str(len(ysim[position][0]))+', '+'{:.2%}'.format(len(yreal[position][0])/len(ysim[position][0]))+' (HMBC)'
+				matchingratecsv=matchingratecsv+'\t'+str(len(yreal[position][0]))+'/'+str(len(ysim[position][0]))+'\t'+'{:.2%}'.format(len(yreal[position][0])/len(ysim[position][0]))
 			matchingrate=matchingrate+', matching rate: '+str(len(yreal[position][1]))+'/'+str(len(ysim[position][1]))+', '+'{:.2%}'.format(len(yreal[position][1])/len(ysim[position][1]))+' (HSQC)'
+			matchingratecsv=matchingratecsv+'\t'+str(len(yreal[position][1]))+'/'+str(len(ysim[position][1]))+'\t'+'{:.2%}'.format(len(yreal[position][1])/len(ysim[position][1]))
 			if usehsqctocsy== 'true':
 				matchingrate=matchingrate+', matching rate: '+str(len(yreal[position][2]))+'/'+str(len(ysim[position][2]))+', '+'{:.2%}'.format(len(yreal[position][2])/len(ysim[i][2]))+' (HSQC-TOCSY)'
+				matchingratecsv=matchingratecsv+'\t'+str(len(yreal[position][2]))+'/'+str(len(ysim[position][2]))+'\t'+'{:.2%}'.format(len(yreal[position][2])/len(ysim[i][2]))
 			if len(linesnames)>0:
 				if maxstddev-minstddev!=0:
 					print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate)
 					fp.write(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate+'\n')
+					fpcsv.write(str(i+1)+'\t'+str(smiles[position])+'\t'+str(linesnames[position])+'\t'+"{0:.2f}".format(costspercompound_norm[position])+'\t'+"{0:.2f}".format(stddevspercompound_norm[position])+matchingratecsv+'\n')
 				else:
 					print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation:  n/a'+matchingrate)
 					fp.write(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation:  n/a'+matchingrate+'\n')
+					fpcsv.write(str(i+1)+'\t'+str(smiles[position])+'\t'+str(linesnames[position])+'\t'+"{0:.2f}".format(costspercompound_norm[position])+'\t'+matchingratecsv+'\n')
 			else:
 				if maxstddev-minstddev!=0:
 					print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate)
 					fp.write(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate+'\n')
+					fpcsv.write(str(i+1)+'\t'+str(smiles[position])+'\t'+"{0:.2f}".format(costspercompound_norm[position])+'\t'+"{0:.2f}".format(stddevspercompound_norm[position])+matchingratecsv+'\n')
 				else:
 					print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: n/a'+matchingrate)
 					fp(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: n/a'+'\n')
+					fpcsv(str(i+1)+'\t'+str(smiles[position])+'\t'+"{0:.2f}".format(costspercompound_norm[position])+'\tn/a'+'\n')
 			i+=1
 
 	for noshift in noshifts:
 		print('no shifts were predicted for '+str(smiles[noshift])+' and we cannot say anything about it!')
 	fp.close()
+	fpcsv.close()
