@@ -71,6 +71,7 @@ def similarity(cp, project):
 	xrealunassigned=[]
 	yrealunassigned=[]
 	linesnames=[]
+	spectraforcover=[]
 	for spectrum_simulated in spectra_simulated:
 		xreallocal=[]
 		xreallocal.append([])
@@ -96,6 +97,7 @@ def similarity(cp, project):
 		yreallocalunassigned.append([])
 		yreallocalunassigned.append([])
 		yreallocalunassigned.append([])
+		spectrumforcover=[]
 		if len(spectrum_simulated)>0:
 			#print(str(len(spectrum_simulated))+' b '+str(len(spectrum_real)))
 			cost=np.zeros((len(spectrum_simulated),len(spectrum_real)))
@@ -117,7 +119,7 @@ def similarity(cp, project):
 						cost[i][k]=x*x
 					else:
 						cost[i][k]=sys.float_info.max/10000
-					#if(peak_real[0]>191 and peak_real[0]<192 and peak_real[1]>7.3 and peak_real[1]<7.5):
+					#if(peak_real[0]>69 and peak_real[0]<70 and peak_real[1]>5.3 and peak_real[1]<5.4):
 					#	print(peak_real)
 					#	print(peak_simulated)
 					#	print(cost[i][k])
@@ -175,6 +177,7 @@ def similarity(cp, project):
 							number_of_hits+=1
 							xreallocal[type].append(spectrum_real[col_ind[indexmin]][0])
 							yreallocal[type].append(spectrum_real[col_ind[indexmin]][1])
+							spectrumforcover.append(peak)
 						else:
 							xreallocalunassigned[type].append(spectrum_real[col_ind[indexmin]][0])
 							yreallocalunassigned[type].append(spectrum_real[col_ind[indexmin]][1])
@@ -193,8 +196,8 @@ def similarity(cp, project):
 		ysim.append(ysimlocal)
 		xrealunassigned.append(xreallocalunassigned)
 		yrealunassigned.append(yreallocalunassigned)
+		spectraforcover.append(spectrumforcover)
 		
-
 	#we have now got the costs in costs and the standard deviations of the cluster distributions in stddists, so we can do the normalisation
 	#print(costs)
 	#print(stddevs)
@@ -277,7 +280,7 @@ def similarity(cp, project):
 							xrealrest.append(peak_real[0])
 							yrealrest.append(peak_real[1])
 				if len(xrealrest)>0:
-					ax.scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.6, edgecolors='none', s=12)
+					ax.scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.2, edgecolors='none', s=12)
 			ax.legend()
 			ax.grid(True)
 		ax = fig.add_subplot(1,3,2)
@@ -312,7 +315,7 @@ def similarity(cp, project):
 						xrealrest.append(peak_real[0])
 						yrealrest.append(peak_real[1])
 			if len(xrealrest)>0:
-				ax.scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.6, edgecolors='none', s=12)
+				ax.scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.2, edgecolors='none', s=12)
 				#print(xrealrest)
 				#print(yrealrest)
 		ax.legend()
@@ -341,7 +344,7 @@ def similarity(cp, project):
 							xrealrest.append(peak_real[0])
 							yrealrest.append(peak_real[1])
 				if len(xrealrest)>0:
-					ax.scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.6, edgecolors='none', s=12)
+					ax.scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.2, edgecolors='none', s=12)
 			ax.legend()
 			ax.grid(True)
 		fig.savefig(datapath+os.sep+project+os.sep+'plots'+os.sep+name+'.png', transparent=False, dpi=80, bbox_inches="tight")
