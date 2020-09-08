@@ -71,6 +71,7 @@ def similarity(cp, project):
 	xrealunassigned=[]
 	yrealunassigned=[]
 	linesnames=[]
+	#this is for calculating the optimal set
 	spectraforcover=[]
 	for spectrum_simulated in spectra_simulated:
 		xreallocal=[]
@@ -115,7 +116,7 @@ def similarity(cp, project):
 				ysimlocal[type].append(peak_simulated[1])
 				for peak_real in spectrum_real:
 					x=abs(peak_real[0]-peak_simulated[0])+abs((peak_real[1]-peak_simulated[1])*10)
-					if (type==0 and peak_real[2]=="HMBC") or (type==1 and peak_real[2]=="HSQC") or (type==2 and peak_real[2]=="HSQCTOCSY"):
+					if (type==0 and "HMBC" in peak_real[2]) or (type==1 and "HSQC" in peak_real[2] and not "TOCSY" in peak_real[2]) or (type==2 and "HSQCTOCSY" in peak_real[2]):
 						cost[i][k]=x*x
 					else:
 						cost[i][k]=sys.float_info.max/10000
@@ -169,9 +170,9 @@ def similarity(cp, project):
 						#print(str(spectrum_real[col_ind[indexmin]][0])+' '+str(spectrum_real[col_ind[indexmin]][1]))
 						#print(str(spectrum_simulated[col_ind[rowmin]][0])+' '+str(spectrum_simulated[col_ind[rowmin]][1]))
 						type=2
-						if spectrum_real[col_ind[indexmin]][2]=='HMBC':
+						if 'HMBC' in spectrum_real[col_ind[indexmin]][2]:
 							type=0
-						elif spectrum_real[col_ind[indexmin]][2]=='HSQC':
+						elif 'HSQC' in spectrum_real[col_ind[indexmin]][2] and not 'TOCSY' in spectrum_real[col_ind[indexmin]][2]:
 							type=1
 						if mincost<9:
 							number_of_hits+=1
@@ -300,7 +301,7 @@ def similarity(cp, project):
 			#print(xsim[i][1])
 			#print(ysim[i][1])
 			for peak_real in spectrum_real:
-				if peak_real[2] == "HSQC":
+				if "HSQC" in peak_real[2] and not "TOCSY" in peak_real[2]:
 					valuecontained=False
 					#print(peak_real)
 					#print(peak_real[0] in xrealunassigned[i][1])
@@ -332,7 +333,7 @@ def similarity(cp, project):
 				xrealrest=[]
 				yrealrest=[]
 				for peak_real in spectrum_real:
-					if peak_real[2] == "HSQCTOCSY":
+					if "HSQCTOCSY" in peak_real[2]:
 						valuecontained=False
 						if peak_real[0] in xreal[i][2] and peak_real[1] in yreal[i][2]:
 							if xreal[i][2].index(peak_real[0])!=yreal[i][2].index(peak_real[1]):
@@ -400,3 +401,43 @@ def similarity(cp, project):
 		print('no shifts were predicted for '+str(smiles[noshift])+' and we cannot say anything about it!')
 	fp.close()
 	fpcsv.close()
+
+	#now we find the optimal set. We have spectraforcover containing the peaks covered by each spectrum, costspercompound_norm containing the distances, and stddevspercompound_norm containing the std devs
+	#usedspectra = [False for i in range(len(spectraforcover))] 
+	#addspectrum(usedspectra, spectraforcover,0, costspercompound_norm, stddevspercompound_norm)
+
+best=0
+bestspectrum=[]
+count=0
+
+def addspectrum(usedspectra, spectraforcover, start, costspercompound_norm, stddevspercompound_norm):
+	global best
+	global bestspectrum
+	global count
+	for x in range(start,len(usedspectra)):
+		if count% 10000 == 0:
+			print(count)
+		count+=1
+		newusedspectra=usedspectra.copy()
+		if newusedspectra[x]==False:
+			newusedspectra[x]=True
+			usedpeaks=[]
+			numberofpeaks=0
+			numberofmultiplepeaks=0
+			distance=0
+			stddev=0
+			for y in range(0,len(newusedspectra)):
+				if newusedspectra[y]==True:
+					distance+=costspercompound_norm[y]
+					stddev+=stddevspercompound_norm[y]
+					for peak in spectraforcover[y]:
+						if peak in usedpeaks:
+							numberofmultiplepeaks+=1
+						else:
+							numberofpeaks+=1
+							usedpeaks.append(peak)
+			if (numberofpeaks-numberofmultiplepeaks)>best:
+				best=numberofpeaks-numberofmultiplepeaks
+				bestspectrum=newusedspectra
+				print("combination "+str(newusedspectra).strip('[]')+", best "+str(best)+" "+str((numberofpeaks-numberofmultiplepeaks))+", peaks: "+str(numberofpeaks)+", multiple peaks: "+str(numberofmultiplepeaks)+", distance: "+"{0:.2f}".format(distance)+", std dev: "+"{0:.2f}".format(stddev))
+			addspectrum(newusedspectra, spectraforcover, x+1, costspercompound_norm, stddevspercompound_norm)
