@@ -370,8 +370,13 @@ def similarity(cp, project):
 			matchingrate=''
 			matchingratecsv=''
 			if usehmbc!= 'false':
-				matchingrate=matchingrate+', matching rate: '+str(len(yreal[position][0]))+'/'+str(len(ysim[position][0]))+', '+'{:.2%}'.format(len(yreal[position][0])/len(ysim[position][0]))+' (HMBC)'
-				matchingratecsv=matchingratecsv+'\t'+str(len(yreal[position][0]))+'/'+str(len(ysim[position][0]))+'\t'+'{:.2%}'.format(len(yreal[position][0])/len(ysim[position][0]))
+				rate='n/a'
+				ratecsv='n/a'
+				if len(ysim[position][0])>0:
+					rate='{:.2%}'.format(len(yreal[position][0])/len(ysim[position][0]))
+					ratecsv='{:.2%}'.format(len(yreal[position][0])/len(ysim[position][0]))
+				matchingrate=matchingrate+', matching rate: '+str(len(yreal[position][0]))+'/'+str(len(ysim[position][0]))+', '+rate+' (HMBC)'
+				matchingratecsv=matchingratecsv+'\t'+str(len(yreal[position][0]))+'/'+str(len(ysim[position][0]))+'\t'+ratecsv
 			matchingrate=matchingrate+', matching rate: '+str(len(yreal[position][1]))+'/'+str(len(ysim[position][1]))+', '+'{:.2%}'.format(len(yreal[position][1])/len(ysim[position][1]))+' (HSQC)'
 			matchingratecsv=matchingratecsv+'\t'+str(len(yreal[position][1]))+'/'+str(len(ysim[position][1]))+'\t'+'{:.2%}'.format(len(yreal[position][1])/len(ysim[position][1]))
 			if usehsqctocsy== 'true':
