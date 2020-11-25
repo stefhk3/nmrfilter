@@ -18,7 +18,7 @@ Notice igraph is a different library. If install python-igraph gives an error ab
 
 #Use of respredict
 
-If you want to use the respredict prediction (https://jcheminf.biomedcentral.com/articles/10.1186/s13321-019-0374-3) giving better results, you need to install more packages. The easiest way is to use the two yaml files environment-cpu.yml (for usage of the CPU only) or environment.yml (for using the GPU). They use Anaconda to install an environment. The command is `conda env create --name nmrfilter -f environment.cpu.yaml` respectively `conda env create --name nmrfilter -f environment.yaml`. You can then activate the environment with `conda activate nmrfilter`.
+If you want to use the respredict prediction (https://jcheminf.biomedcentral.com/articles/10.1186/s13321-019-0374-3) giving better results, you need to install more packages. The easiest way is to use the two yaml files environment-cpu.yml (for usage of the CPU only) or environment.yml (for using the GPU). They use Anaconda to install an environment. The command is `conda env create  -f environment-cpu.yml` respectively `conda env create -f environment.yml`. You can then activate the environment with `conda activate nmrfilter`.
 
 #Running
 

@@ -1,3 +1,4 @@
+name: nmrfilter
 channels:
   - rdkit
   - pytorch
