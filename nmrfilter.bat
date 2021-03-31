@@ -5,12 +5,12 @@ set /p OUT=<temp.txt
 for /f "tokens=1,2,3 delims=_" %%a in ("%OUT%") do (
   set DL=%%a
   set SDFILE=%%b
-  set PROJECTPATH=%%b
+  set PROJECTPATH=%%c
 )
-if /i %DL%=="true" (
+if %DL%==true (
     cd respredict
-    python predict_standalone.py --filename %PROJECTPATH%%SDFILE% --format sdf --nuc 13C --sanitize --addhs false > %PROJECTPATH%predc.json
-    python predict_standalone.py --filename %PROJECTPATH%%SDFILE% --format sdf --nuc 1H --sanitize --addhs false > %PROJECTPATH%predh.json
+    python predict_standalone.py --filename %PROJECTPATH%%1\%SDFILE% --format sdf --nuc 13C --sanitize --addhs false > %PROJECTPATH%%1\predc.json
+    python predict_standalone.py --filename %PROJECTPATH%%1\%SDFILE% --format sdf --nuc 1H --sanitize --addhs false > %PROJECTPATH%%1\predh.json
     cd ..
 )
 java -cp "./*" uk.ac.dmu.simulate.Simulate %1
