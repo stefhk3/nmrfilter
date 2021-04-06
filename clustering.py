@@ -87,7 +87,7 @@ def cluster2dspectrum(cp, project):
 	f=open(datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('clusteringoutput'),'w')
 	i=0
 	for cluster in xclusters:
-		fsmarts=open(datapath+os.sep+project+os.sep+'result'+os.sep+'smart'+str(i)+'csv','w')
+		fsmarts=open(datapath+os.sep+project+os.sep+'result'+os.sep+'smart'+str(i)+'.csv','w')
 		fsmarts.write('13C,1H\n')
 		for peak1 in cluster:
 			for peak2 in cluster:
