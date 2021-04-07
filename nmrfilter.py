@@ -36,6 +36,8 @@ if os.path.exists(datapath+os.sep+project+os.sep+"result"):
 		os.remove(predictionoutputfile)
 else:
 	os.mkdir(datapath+os.sep+project+os.sep+"result")
+if not os.path.exists(datapath+os.sep+project+os.sep+"result"+os.sep+"smart"):
+	os.mkdir(datapath+os.sep+project+os.sep+"result"+os.sep+"smart")
 
 if os.path.exists(datapath+os.sep+project+os.sep+"plots"):
 	for f in os.listdir(datapath+os.sep+project+os.sep+"plots"):
