@@ -5,16 +5,13 @@ import os
 
 def Two_Column_List(file):
     with open(file) as input:
-        type=""
         mycsv = csv.reader(input, delimiter='\t', skipinitialspace=True)
         peaks = []
         i=0
         for cols in mycsv:
             if len(cols)==2:
-                peaks.append([i,float(cols[0].strip()),float(cols[1].strip()),type])
+                peaks.append([i,float(cols[0].strip()),float(cols[1].strip())])
                 i+=1
-            elif len(cols)==1:
-                type=cols[0]
     return peaks
 
 def setofy(peaks):
@@ -88,17 +85,10 @@ def cluster2dspectrum(cp, project):
 
 
 	f=open(datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('clusteringoutput'),'w')
-	i=0
 	for cluster in xclusters:
-		fsmarts=open(datapath+os.sep+project+os.sep+'result'+os.sep+'smart'+os.sep+'smart'+str(i)+'.csv','w')
-		fsmarts.write('13C,1H\n')
 		for peak1 in cluster:
 			for peak2 in cluster:
 				if(peak2[0]>=peak1[0] and ((peak1[1]>=peak2[1]-C_LIMIT and peak1[1]<=peak2[1]+C_LIMIT) or (peak1[2]>=peak2[2]-H_LIMIT and peak1[2]<=peak2[2]+H_LIMIT))):
 					f.write(str(peak1[0])+' '+str(peak2[0])+'\n')
-			if("HSQC" in peak1[3] and not "TOCSY" in peak1[3]):
-				fsmarts.write(str(peak1[1])+','+str(peak1[2])+'\n')
-		fsmarts.close()
-		i += 1
 	f.close()
 
