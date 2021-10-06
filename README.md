@@ -1,10 +1,16 @@
-This is the code used in the paper https://pubs.rsc.org/en/content/articlelanding/2019/fd/c8fd00227d. The data in realspectrum.csv are the example for P. boldus. Running the script nmrfilter will produce the list of hits for P. boldus.
+This is the code used in the paper https://pubs.rsc.org/en/content/articlelanding/2019/fd/c8fd00227d. The data in the pboldus project are the example for P. boldus. Running the script "nmrfilter pboldus" will produce the list of hits for P. boldus.
 
-#Installation
+Installation
+============
 
 Requirements are Java and Python. For Java, version 1.8 or higher is needed. A JRE (Java Runtime Environment) is enough, a JDK is not required. The default of any operating system should do.
  
-Python version must be 3 (3.66 was tested). You need numpy, scipy, louvain, and python-igraph libraires. Using pip, you can install them by doing
+Python version must be 3 (3.66 was tested). You need numpy, scipy, louvain, and python-igraph libraires. The following alternatives exist
+
+Pip
+---
+
+Using pip, you can install them by doing
 
 pip3 install numpy
 
@@ -16,11 +22,20 @@ pip3 install louvain
 
 Notice igraph is a different library. If install python-igraph gives an error about missing C libraries, try using a wheel, following https://stackoverflow.com/questions/34113151/how-to-install-igraph-for-python-on-windows
 
-#Use of respredict
+Anaconda
+--------
+
+There is an environment file for anaconda. See next section for an explanation. The environment can also be used if respredict is not to be used.
+
+On linux, it might be necessary to change the nmrfilter.sh file to executable with "chmod a+x nmrfilter.sh".
+
+Use of respredict
+=================
 
 If you want to use the respredict prediction (https://jcheminf.biomedcentral.com/articles/10.1186/s13321-019-0374-3) giving better results, you need to install more packages. The easiest way is to use the two yaml files environment-cpu.yml (for usage of the CPU only) or environment.yml (for using the GPU). They use Anaconda to install an environment. The command is `conda env create  -f environment-cpu.yml` respectively `conda env create -f environment.yml`. You can then activate the environment with `conda activate nmrfilter`.
 
-#Running
+Running
+=======
 
 The program works on projects, where each project is a folder. It must contain the required files (see below) and any results will be written to it. If you checkout the repository https://github.com/stefhk3/nmrfilterprojects you can use this as example projects.
 
