@@ -18,6 +18,7 @@ dependencies:
   - pip
   - pip:
     - python-igraph
+    - louvain
     - ruffus
     - tqdm
     - networkx
