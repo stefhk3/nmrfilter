@@ -29,6 +29,15 @@ There is an environment file for anaconda. See next section for an explanation. 
 
 On linux, it might be necessary to change the nmrfilter.sh file to executable with "chmod a+x nmrfilter.sh".
 
+Using Jupyter notebook
+----------------------
+
+If you want to run the jupyter notebook code, you need to run
+
+jupyter nbextension enable --py widgetsnbextension
+
+before starting jupyter.
+
 Use of respredict
 =================
 

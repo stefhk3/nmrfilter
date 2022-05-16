@@ -15,6 +15,7 @@ dependencies:
   - numba
   - click
   - pip
+  - ipywidgets
   - pip:
     - python-igraph
     - louvain
