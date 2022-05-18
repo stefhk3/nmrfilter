@@ -5,7 +5,7 @@ import sys
 from clustering import *
 from clusterlouvain import *
 from similarity import *
-from util import *
+from nmrutil import *
 
 project=sys.argv[1]
 cp = readprops(project)
