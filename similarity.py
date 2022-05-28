@@ -6,6 +6,7 @@ import configparser
 import sys
 import os
 import matplotlib.pyplot as plt
+import pandas as pd
 
 def Two_Column_List(file):
     with open(file) as input:
@@ -19,7 +20,7 @@ def Two_Column_List(file):
                 type=cols[0]
     return peaks
 
-def similarity(cp, project):
+def similarity(cp, project, echo):
 	datapath=cp.get('datadir')
 	fp = open(datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('predictionoutput'),'r')
 	spectra_simulated = []
@@ -371,8 +372,11 @@ def similarity(cp, project):
 	if usehsqctocsy== 'true':
 		fpcsv.write('\tmatching rate (HSQC-TOCSY)\t')
 	fpcsv.write('\n')
+	result=[]
 	for cost in sorted(overallcosts):
 		for position in overallcosts[cost]:
+			localresult=[]
+			matchingresult=[]
 			matchingrate=''
 			matchingratecsv=''
 			if usehmbc!= 'false':
@@ -382,37 +386,70 @@ def similarity(cp, project):
 					rate='{:.2%}'.format(len(yreal[position][0])/len(ysim[position][0]))
 					ratecsv='{:.2%}'.format(len(yreal[position][0])/len(ysim[position][0]))
 				matchingrate=matchingrate+', matching rate: '+str(len(yreal[position][0]))+'/'+str(len(ysim[position][0]))+', '+rate+' (HMBC)'
+				matchingresult.append(str(len(yreal[position][0]))+'/'+str(len(ysim[position][0])))
+				matchingresult.append(rate)
 				matchingratecsv=matchingratecsv+'\t'+str(len(yreal[position][0]))+'/'+str(len(ysim[position][0]))+'\t'+ratecsv
 			matchingrate=matchingrate+', matching rate: '+str(len(yreal[position][1]))+'/'+str(len(ysim[position][1]))+', '+'{:.2%}'.format(len(yreal[position][1])/len(ysim[position][1]))+' (HSQC)'
 			matchingratecsv=matchingratecsv+'\t'+str(len(yreal[position][1]))+'/'+str(len(ysim[position][1]))+'\t'+'{:.2%}'.format(len(yreal[position][1])/len(ysim[position][1]))
+			matchingresult.append(str(len(yreal[position][1]))+'/'+str(len(ysim[position][1])))
+			matchingresult.append('{:.2%}'.format(len(yreal[position][1])/len(ysim[position][1])))
 			if usehsqctocsy== 'true':
 				matchingrate=matchingrate+', matching rate: '+str(len(yreal[position][2]))+'/'+str(len(ysim[position][2]))+', '+'{:.2%}'.format(len(yreal[position][2])/len(ysim[i][2]))+' (HSQC-TOCSY)'
 				matchingratecsv=matchingratecsv+'\t'+str(len(yreal[position][2]))+'/'+str(len(ysim[position][2]))+'\t'+'{:.2%}'.format(len(yreal[position][2])/len(ysim[i][2]))
+				matchingresult.append(str(len(yreal[position][2]))+'/'+str(len(ysim[position][2])))
+				matchingresult.append('{:.2%}'.format(len(yreal[position][2])/len(ysim[i][2])))
+			localresult.append(smiles[position])
 			if len(linesnames)>0:
+				localresult.append(linesnames[position]);
 				if maxstddev-minstddev!=0:
-					print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate)
+					if echo:
+						print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate)
 					fp.write(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate+'\n')
 					fpcsv.write(str(i+1)+'\t'+str(smiles[position])+'\t'+str(linesnames[position])+'\t'+"{0:.2f}".format(costspercompound_norm[position])+'\t'+"{0:.2f}".format(stddevspercompound_norm[position])+matchingratecsv+'\n')
 				else:
-					print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation:  n/a'+matchingrate)
+					if echo:
+						print(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation:  n/a'+matchingrate)
 					fp.write(str(i+1)+': '+str(smiles[position])+'/'+str(linesnames[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation:  n/a'+matchingrate+'\n')
 					fpcsv.write(str(i+1)+'\t'+str(smiles[position])+'\t'+str(linesnames[position])+'\t'+"{0:.2f}".format(costspercompound_norm[position])+'\t'+matchingratecsv+'\n')
 			else:
 				if maxstddev-minstddev!=0:
-					print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate)
+					if echo:
+						print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate)
 					fp.write(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: '+"{0:.2f}".format(stddevspercompound_norm[position])+matchingrate+'\n')
 					fpcsv.write(str(i+1)+'\t'+str(smiles[position])+'\t'+"{0:.2f}".format(costspercompound_norm[position])+'\t'+"{0:.2f}".format(stddevspercompound_norm[position])+matchingratecsv+'\n')
 				else:
-					print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: n/a'+matchingrate)
+					if echo:
+						print(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: n/a'+matchingrate)
 					fp(str(i+1)+': '+str(smiles[position])+', distance: '+"{0:.2f}".format(costspercompound_norm[position])+', standard deviation: n/a'+'\n')
 					fpcsv(str(i+1)+'\t'+str(smiles[position])+'\t'+"{0:.2f}".format(costspercompound_norm[position])+'\tn/a'+'\n')
 			i+=1
+			localresult.append("{0:.2f}".format(costspercompound_norm[position]))
+			if maxstddev-minstddev!=0:
+				localresult.append("{0:.2f}".format(stddevspercompound_norm[position]))
+			else:
+				localresult.append("n/a")
+			localresult.extend(matchingresult)
+			result.append(localresult)
 
 	for noshift in noshifts:
 		print('no shifts were predicted for '+str(smiles[noshift])+' and we cannot say anything about it!')
 	fp.close()
 	fpcsv.close()
-
+	columns=['SMILES']
+	if len(linesnames)>0:
+		columns.append('Name')
+	columns.extend(['Distance', 'Standard deviation'])
+	if usehmbc!= 'false':
+		columns.append('Matching peaks HMBC')
+		columns.append('Mathcing rate HMBC')
+	columns.append('Matching peaks HSQC')
+	columns.append('Mathcing rate HSQC')
+	if usehsqctocsy== 'true':
+		columns.append('Matching peaks HSQC-TOCSY')
+		columns.append('Mathcing rate HSQC-TOCSY')
+	df = pd.DataFrame(result, columns = columns)
+	df.index = np.arange(1, len(df) + 1)
+	return df
 	#now we find the optimal set. We have spectraforcover containing the peaks covered by each spectrum, costspercompound_norm containing the distances, and stddevspercompound_norm containing the std devs
 	#usedspectra = [False for i in range(len(spectraforcover))] 
 	#addspectrum(usedspectra, spectraforcover,0, costspercompound_norm, stddevspercompound_norm)

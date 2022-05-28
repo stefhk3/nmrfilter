@@ -20,5 +20,5 @@ cluster2dspectrum(cp, project)
 print("Detecting communities in the measures spectrum...")
 cluster2dspectrumlouvain(cp, project)
 print("Calculating best hits in your compounds...")
-similarity(cp, project)
+similarity(cp, project, True)
 
