@@ -260,10 +260,10 @@ def similarity(cp, project, echo):
 		fig = plt.figure(figsize=(30,10))
 		if usehmbc!= 'false':
 			ax = fig.add_subplot(1,3,1)
-			ax.invert_xaxis()
-			ax.invert_yaxis()
 			ax.set_xlim([0, 10])
 			ax.set_ylim([0, 200])
+			ax.invert_xaxis()
+			ax.invert_yaxis()
 			ax.scatter(ysim[i][0], xsim[i][0], c='grey', label='simulated hmbc ('+str(len(ysim[i][0]))+')', alpha=0.6, edgecolors='none', s=12)
 			if len(xreal[i][0])>0:
 				ax.scatter(yreal[i][0], xreal[i][0], c='green', label='measured assigned ('+str(len(yreal[i][0]))+')', alpha=1, edgecolors='none', s=12)
@@ -288,10 +288,10 @@ def similarity(cp, project, echo):
 			ax.legend()
 			ax.grid(True)
 		ax = fig.add_subplot(1,3,2)
+		ax.set_xlim([0, 10])
+		ax.set_ylim([0, 200])
 		ax.invert_xaxis()
 		ax.invert_yaxis()
-		ax.set_xlim([0, 10])
-		ax.set_ylim([0, 150])
 		ax.scatter(ysim[i][1], xsim[i][1], c='grey', label='simulated hsqc ('+str(len(ysim[i][1]))+')', alpha=0.6, edgecolors='none', s=12)
 		if len(xreal[i][1])>0:
 			ax.scatter(yreal[i][1], xreal[i][1], c='green', label='measured assigned ('+str(len(yreal[i][1]))+')', alpha=1, edgecolors='none', s=12)
@@ -328,10 +328,10 @@ def similarity(cp, project, echo):
 		ax.grid(True)
 		if usehsqctocsy== 'true':
 			ax = fig.add_subplot(1,3,3)
+			ax.set_xlim([0, 10])
+			ax.set_ylim([0, 200])
 			ax.invert_xaxis()
 			ax.invert_yaxis()
-			ax.set_xlim([0, 10])
-			ax.set_ylim([0, 150])
 			ax.scatter(ysim[i][2], xsim[i][2], c='grey', label='simulated hsqc ('+str(len(ysim[i][2]))+')', alpha=0.6, edgecolors='none', s=12)
 			if len(xreal[i][2])>0:
 				ax.scatter(yreal[i][2], xreal[i][2], c='green', label='measured assigned ('+str(len(yreal[i][2]))+')', alpha=1, edgecolors='none', s=12)
