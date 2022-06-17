@@ -1,0 +1,17 @@
+terms, definitions
+datadir, absolute directory  (On Windows use "\\" as file separator)
+msmsinput, text file with the SMILES strings - candidate list (testall.smi)
+predictionoutput, files resulted from the predictions (resultprediction.csv)
+result, file with att data calculated by NMRfilter (result.txt)
+solvent, option for solvent are Methanol-D4 (CD3OD) Chloroform-D1 (CDCl3) Dimethylsulphoxide-D6 (DMSO-D6 C2D6SO) or Unreported
+tolerancec, tolerance threshold for the 13C axis	(e.g. 0.2)
+toleranceh, tolerance threshold for the 1H axis	(e.g. 0.02)
+spectruminput, peak picked list from the available 2D NMR data (realspectrum.csv)
+clusteringoutput, file with the clustered data from HMBC and HSQC-TOCSY data (cluster.txt)
+rberresolution, tolerance threshold for the connectivity across different 2D NMR data (e.g. 0.2)
+louvainoutput, (clusterslouvain.txt)
+usehsqctocsy, define the use of HSQC-TOCSY or not (default false)
+usehmbc, define the use of HMBC or not (default true)
+dotwobonds, define the distance for the HMBC simulation (default false)
+usedeeplearning, define the additional use of the deep learning method for chemical shift predictions (default true)
+debug, ??? (default false)
