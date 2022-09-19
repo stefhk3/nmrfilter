@@ -2,7 +2,7 @@ terms, definitions
 datadir, absolute directory  (On Windows use "\\" as file separator)
 msmsinput, text file with the SMILES strings - candidate list (testall.smi)
 namesinput, text file with names - candidate list. Name of file is always msmsinput with "names.txt" e.g. testallnames.txt
-combinedinput, text file with smiles strings and names separated by ; Replaces msmsinput and namesinput if used
+candidates, text file with smiles strings and names separated by ; Replaces msmsinput and namesinput if used
 predictionoutput, files resulted from the predictions (resultprediction.csv)
 result, file with att data calculated by NMRfilter (result.txt)
 solvent, option for solvent are Methanol-D4 (CD3OD) Chloroform-D1 (CDCl3) Dimethylsulphoxide-D6 (DMSO-D6 C2D6SO) or Unreported
