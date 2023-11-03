@@ -2,6 +2,7 @@ from igraph import *
 import configparser
 import csv
 import louvain
+import os
 
 def Two_Column_List(file):
     with open(file) as input:

@@ -1,0 +1,15 @@
+numpy==1.24
+scipy
+pandas
+rdkit
+click
+cirpy
+scikit-learn
+matplotlib
+python-igraph
+pubchempy
+numba
+torch
+tqdm
+igraph
+louvain
