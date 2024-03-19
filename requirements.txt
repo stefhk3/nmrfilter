@@ -6,7 +6,7 @@ click
 cirpy
 scikit-learn
 matplotlib
-python-igraph
+igraph
 pubchempy
 numba
 torch

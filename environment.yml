@@ -18,7 +18,7 @@ dependencies:
   - pip
   - ipywidgets
   - pip:
-    - python-igraph
+    - igraph
     - louvain
     - ruffus
     - tqdm

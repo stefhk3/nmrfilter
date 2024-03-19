@@ -17,13 +17,12 @@ dependencies:
   - pip
   - ipywidgets
   - pip:
-    - python-igraph
-    - louvain
+    - igraph
     - ruffus
     - tqdm
     - networkx
     - tensorflow-cpu
     - tensorboardX
-    - cirpy    
+    - cirpy
     - pubchempy
     - louvain
