@@ -1,14 +1,14 @@
-name: nmrfilter
+name: nmrfiltergpu
 channels:
-  - rdkit
+  - conda-forge
   - pytorch
 dependencies:
-  - python=3.7
+  - python=3.11.2
   - anaconda
   - rdkit
-  - pytorch=1.4
+  - pytorch
   - torchvision
-  - cudatoolkit=10.1
+  - cudatoolkit
   - pandas
   - seaborn
   - scikit-learn
@@ -18,13 +18,12 @@ dependencies:
   - pip
   - ipywidgets
   - pip:
-    - python-igraph
+    - igraph
     - louvain
     - ruffus
     - tqdm
     - networkx
     - tensorboardX
-    - cirpy    
+    - cirpy
     - pubchempy
     - ruamel.yaml
-    

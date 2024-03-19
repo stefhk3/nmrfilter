@@ -1,12 +1,12 @@
 name: nmrfilter
 channels:
-  - rdkit
+  - conda-forge
   - pytorch
 dependencies:
-  - python=3.7
+  - python=3.11.2
   - anaconda
   - rdkit
-  - pytorch=1.4
+  - pytorch
   - torchvision
   - pandas
   - seaborn
@@ -17,13 +17,12 @@ dependencies:
   - pip
   - ipywidgets
   - pip:
-    - python-igraph
-    - louvain
+    - igraph
     - ruffus
     - tqdm
     - networkx
     - tensorflow-cpu
     - tensorboardX
-    - cirpy    
+    - cirpy
     - pubchempy
     - louvain

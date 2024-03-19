@@ -1,2 +1,4 @@
-#Ignore nmrfilter_env
+
+# Ingore Python virutal environment
 /nmrfilter_env/
+
