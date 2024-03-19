@@ -1,64 +1,83 @@
-This is the code used in the paper https://pubs.rsc.org/en/content/articlelanding/2019/fd/c8fd00227d. The data in the pboldus project are the example for P. boldus. Running the script "nmrfilter pboldus" will produce the list of hits for P. boldus.
+
+Nmrfilter v1.5 is an updated version of [Nmrfilter](https://github.com/stefhk3/nmrfilter), originally developed by S. Kuhn, S. Colreavy-Donnelly, J. Santana de Souza and R. M. Borges to demonstrate their [improved software pipeline for NMR mixture analysis](https://pubs.rsc.org/en/content/articlelanding/2019/fd/c8fd00227d).
+
+Nmrfilter v1.5 can be used to find the most likely candidate substance from a set of candidates provided by there user, thereby automatically identifying the substance from its NMR spectrum data. Nmrfilter v1.5 outputs a list of the provided candidate substances and their individual match ratings in comparison to the original substance with plots visualizing the similarities between the compounds.
 
 Installation
 ============
 
-Requirements are Java and Python. For Java, version 1.8 or higher is needed. A JRE (Java Runtime Environment) is enough, a JDK is not required. The default of any operating system should do.
+Requirements are Java and Python. For Java, version 1.8 or higher is needed. A JRE (Java Runtime Environment) is enough, a JDK is not required.
  
-Python version must be 3 (3.66 was tested). You need numpy, scipy, louvain, and python-igraph libraires. The following alternatives exist
+Python must be version >= 3.10.2. (3.10.2 an 3.11.2 have been tested and used).
 
-Pip
----
-
-Using pip, you can install them by doing
-
-pip3 install numpy
-
-pip3 install scipy
-
-pip3 install python-igraph
-
-pip3 install louvain
-
-Notice igraph is a different library. If install python-igraph gives an error about missing C libraries, try using a wheel, following https://stackoverflow.com/questions/34113151/how-to-install-igraph-for-python-on-windows
+Nothing further is needed, as the program creates a Python virtual environment installid all the needed packages.
 
 Anaconda
 --------
 
-There is an environment file for anaconda. See next section for an explanation. The environment can also be used if respredict is not to be used.
+There are 2 Anaconda environments available for use:
 
-On linux, it might be necessary to change the nmrfilter.sh file to executable with "chmod a+x nmrfilter.sh".
+`nmrfilter` for running the program using the CPU
 
-Using Jupyter notebook
-----------------------
+Install by running
+`conda env create -f environment-cpu.yml`
 
-If you want to run the jupyter notebook code, you need to run
+`nmrfiltergpu`  for running the program using the GPU
+Install by running
+`conda env create -f environment-gpu.yml`
 
-jupyter nbextension enable --py widgetsnbextension
+Activate the environments by running `conda activate <environment name>`
 
-before starting jupyter.
+When using the Anaconda, it is recommended to use the run-script `nmrfilternovenv.sh` to remove redundant operations.
 
-Use of respredict
+Use of Respredict
 =================
 
-If you want to use the respredict prediction (https://jcheminf.biomedcentral.com/articles/10.1186/s13321-019-0374-3) giving better results, you need to install more packages. The easiest way is to use the two yaml files environment-cpu.yml (for usage of the CPU only) or environment.yml (for using the GPU). They use Anaconda to install an environment. The command is `conda env create  -f environment-cpu.yml` respectively `conda env create -f environment.yml`. You can then activate the environment with `conda activate nmrfilter`.
+
+[Respredict](https://jcheminf.biomedcentral.com/articles/10.1186/s13321-019-0374-3) is another way of predicting NMR spectral properties using machine learning. Possibly yielding better results, respredict is available for use in Nmrfilter v1.5. It can be enabled in the properties file, see **Glossary**"**.
+
+Use of Respredict requires extra packages, rendering the use of bundled Anaconda environments necessary. See **Anaconda** for further information.
 
 Running
 =======
 
-The program works on projects, where each project is a folder. It must contain the required files (see below) and any results will be written to it. If you checkout the repository https://github.com/stefhk3/nmrfilterprojects you can use this as example projects.
+Nmrfilter v1.5 works on projects, where each project is a folder. Example projects can be found [here](https://github.com/stefhk3/nmrfilterprojects) The folder must contain the following files:
+- A list of candidate structures in the form of SMILES, one structure per line. File name can be configured by the `msmsinput` property
+- Measured spectrum data in a .csv file. The file must be a list of shifts, coordinates seperated by a tab. ^13^C shift in the first dimension, ^1^H shift in the second. Each row corresponds to one shift. HMBC and HSQC shifts should be included. File name can be configured by the `spectruminput` property. 
 
-The settings for a run are contained in the nmrproc.properties file. It also gives the names of the input/output files. You can change these, but you do not need to do so. The property datadir is where the projects/folders are searched for. If you have downloaded the nmrfilterprojects examples, set this to the nmrfilterprojects directory.
- directory.
-The following data/files need to be supplied to run an anlysis in the project folder you want to work on:
-* A list of candidate SMILES. This is in the files specified by the `msmsinput` property (default testall.smi). This must have one structure per line.
-* The measured spectra in `spectruminput` (default realspectrum.csv). This must be a list of shifts, separated by tab. One row is one shift. As a standard, HMBC and HSQC shifts are included here.
-* Set `solvent` property to the solvent used if it is `Methanol-D4 (CD3OD)` or `Chloroform-D1 (CDCl3)`. Otherwise, use `Unreported`.
 
-Once these files are in place, run `nmrfilter.sh <projectname>` (linux) or `nmrfilter.bat <projectname>` (windows). This should produce the result list. Replace <projectname> by the name of the project/folder you want to work on.
+Before running, in the `nmrproc.properties` file, the `datadir` property must be set to the absolute path of the folder containing project folders. Additionally, in the `nmrproc.properties` select the right solvent used in the mixture. See **Glossary** for available options.
 
-The following features are optional:
-* You can include HSQCTOCSY shifts. For this, set `usehsqctocsy=true` and include the HSQCTOSY shifts in the `spectruminput` file.
-* You can produce some debug output by setting `debug=true`. You need a file called `testallnames.txt` for this, which has the names of the compounds in the same order as in the `msmsinput` file.
-* You can set paraemteres for tolerances and resolutions. Normally these do not need to be modified. 
-* With `usedeeplearning=true` you can activate the respredict prediction (https://jcheminf.biomedcentral.com/articles/10.1186/s13321-019-0374-3) instead of the HOSE code based one. This gives better results, but requires the installation as described above. 
+With these files in place, the program can be run by using `./nmrfilter.sh <project name>` on Linux or `./nmrfilter.bat <project name>` on Windows. Replace `<project name>` with the name of the project (folder name) you want the predictions for. When running, the program creates a Python virtual environment installing everything needed for its use. If you prefer to use the external environment, see `requirements.txt` for all the packages needed to install and use the `nmrfilternovenv` script instead.
+
+
+Following optional features are available:
+- HSQCTOCSY shifts can be included. Include the shifts in the `spectruminput` file and set the `usehsqctocsy` property to `true`.
+- Debug output can be produced by setting the property `debug` to true. As a prequisite, a file `testallnames.txt` needs to be included in the project folder. The file should contain the names of the compounds in the same order as in the `msmsinput` file.
+- Parameters for tolerances and resolutions for the clustering and network algorithm can be set. See **Glossary** for details.
+- To use respredict, set the property `usedeeplearning` to `true`. See **Use of Respredict** for further information. 
+
+See **Glossary** for information about all the configurable properties.
+
+Glossary
+=======
+
+The following table contains all the properties in the `nmrproc.properties` file with explanations, options and default values shown.
+
+| Property | Description | Default | 
+| ----------- | ----------- | ---------- |
+| datadir | Path to the absolute directory containing project folders to be used for input.  | /home/karl/nmrfilterprojects |
+| msmsinput | Name of the file containing the list of can-didate substances in a project folder.  | testall.smi |
+| predictionoutput | Name of the file containing simulated spectra shifts of the candidate substances .  | resultpre-diction.csv |
+| result | Name of solvent if used. Choices available are `Methanol-D4 (CD3OD)`, `Chloro-form-D1 (CDC13)` and `Dimethylsulph-oxide-D6 (DMSO-D6, C2D6SO)`. Other-wise use `Unreported`.  | `Methanol-D4 (CD3OD)` |
+| tolerancec | Tolerance for the 13C axis.  | 0.2 |
+| toleranceh | Tolerance for the 1H axis.  | 0.02 |
+| spectuminput | Name of the file containing measured spectrum data.  | realspec-trum.csv |
+| clusteringoutput | Name of a file created containing initial found cross peaks.  | cluster.txt |
+| rberresolution | Resolution parameter for the RBER algo-rithm provided by the Louvain library, which changes the size of the clusters. Larger the value, smaller the clusters.  | 0.2 |
+| usehmbc | Boolean. Define the use of HMBC or not.  | true |
+| dotwobonds | TBA TBA TBA  | false |
+| usedeeplearning | Boolean. If set “true”, uses respredict prediction instead of a HOSE code based one.  | false |
+| debug | TBA TBA TBA  | false |
+
+
