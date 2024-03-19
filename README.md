@@ -1,3 +1,5 @@
+![NMRFilter](NMRfilter_icon.png)
+
 
 Nmrfilter v1.5 is an updated version of [Nmrfilter](https://github.com/stefhk3/nmrfilter), originally developed by S. Kuhn, S. Colreavy-Donnelly, J. Santana de Souza and R. M. Borges to demonstrate their [improved software pipeline for NMR mixture analysis](https://pubs.rsc.org/en/content/articlelanding/2019/fd/c8fd00227d).
 
@@ -41,7 +43,7 @@ Use of Respredict requires extra packages, rendering the use of bundled Anaconda
 Running
 =======
 
-Nmrfilter v1.5 works on projects, where each project is a folder. Example projects can be found [here](https://github.com/stefhk3/nmrfilterprojects) The folder must contain the following files:
+Nmrfilter v1.5 works on projects, where each project is a folder. Example projects can be found [here.](https://github.com/stefhk3/nmrfilterprojects) The folder must contain the following files:
 - A list of candidate structures in the form of SMILES, one structure per line. File name can be configured by the `msmsinput` property
 - Measured spectrum data in a .csv file. The file must be a list of shifts, coordinates seperated by a tab. ^13^C shift in the first dimension, ^1^H shift in the second. Each row corresponds to one shift. HMBC and HSQC shifts should be included. File name can be configured by the `spectruminput` property. 
 
