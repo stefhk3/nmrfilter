@@ -256,7 +256,9 @@ def similarity(cp, project, echo):
 	#we make plot
 	i=0
 	for name in linesnames:
-		#print(name)
+		print(name)
+		print(ysim)
+		print(xsim)
 		fig = plt.figure(figsize=(30,10))
 		if usehmbc!= 'false':
 			ax = fig.add_subplot(1,3,1)
