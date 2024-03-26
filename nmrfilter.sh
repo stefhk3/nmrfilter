@@ -1,11 +1,17 @@
 #!/bin/bash
 
+
+echo "
+           __   _                            __ 
+|\ | |\/| |__) (_ . | |_  _  _       /|     |_  
+| \| |  | | \  |  | | |_ (- |    \/   | .   __)                                                                                                        
+"
 # Get the directory path where the shell script is located
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
 if [[ -z $CONDA_SHLVL || $CONDA_SHLVL == 0 ]]; then
-    echo "Conda environment is not in use, using Python Virtual Environment"
+    echo "Conda environment not in use, using Python Virtual Environment"
     # Check if the virtual environment already exists in the script's directory
     if [ -f "$script_dir/nmrfilter_env/bin/activate" ]; then
         echo "NMRfilter_env already exists. Activating..."
@@ -28,8 +34,7 @@ fi
 
 #start the processing
 python3 nmrfilter.py $1
-out=$(java -cp "./*" uk.ac.dmu.simulate.Convert $1) 
-echo "Simulate Convert has been called"
+out=$(java -cp "./*" uk.ac.dmu.simulate.Convert $1)
 
 #out=$(echo $out | tr -d '\n')
 readarray -d _ -t outs <<<"$out"
