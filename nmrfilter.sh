@@ -50,4 +50,9 @@ then
     cd ..
 fi
 java -cp "./*" uk.ac.dmu.simulate.Simulate $1
-python3 nmrfilter2.py $1
+
+if [[ "$@" =~ "--simulate" ]]; then
+    echo "Simulation files are available in the project directory.";
+else
+    python3 nmrfilter2.py $1
+fi
