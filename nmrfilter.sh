@@ -15,6 +15,7 @@ if [[ -z $CONDA_SHLVL || $CONDA_SHLVL == 0 ]]; then
     # Check if the virtual environment already exists in the script's directory
     if [ -f "$script_dir/nmrfilter_env/bin/activate" ]; then
         echo "NMRfilter_env already exists. Activating..."
+        echo ""
         source "$script_dir/nmrfilter_env/bin/activate"
     else
         echo "Creating virtual environment in $script_dir/nmrfilter_env..."
