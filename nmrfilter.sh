@@ -28,7 +28,8 @@ if [[ -z $CONDA_SHLVL || $CONDA_SHLVL == 0 ]]; then
         python -m pip install jupyter
     fi
 else
-    echo "Using conda environment.."
+    echo "Conda is activated, using conda environment.."
+    echo ""
 fi
 
 
