@@ -68,7 +68,7 @@ if %DL%==true (
 
 java -cp "./*" uk.ac.dmu.simulate.Simulate %1
 if "%2" == "--simulate" (
-    echo Finished. Simulation files are available in the project directory.
+    echo Completed. Simulated spectra are available in the project directory.
 ) else (
     python nmrfilter2.py %1
 )
