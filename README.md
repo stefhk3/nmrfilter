@@ -45,7 +45,7 @@ Running
 
 Nmrfilter v1.5 works on projects, where each project is a folder. Example projects can be found [here.](https://github.com/stefhk3/nmrfilterprojects) The folder must contain the following files:
 - A list of candidate structures in the form of SMILES, one structure per line. File name can be configured by the `msmsinput` property
-- Measured spectrum data in a .csv file. The file must be a list of shifts, coordinates seperated by a tab. <sup>13</sup>C shift in the first dimension, <sup>1<sup>H shift in the second. Each row corresponds to one shift. HMBC and HSQC shifts should be included. File name can be configured by the `spectruminput` property. 
+- Measured spectrum data in a .csv file. The file must be a list of shifts, coordinates seperated by a tab. <sup>13</sup>C shift in the first dimension, <sup>1</sup>H shift in the second. Each row corresponds to one shift. HMBC and HSQC shifts should be included. File name can be configured by the `spectruminput` property. 
 
 
 Before running, in the `nmrproc.properties` file, the `datadir` property must be set to the absolute path of the folder containing project folders. Additionally, in the `nmrproc.properties` select the right solvent used in the mixture. See **Glossary** for available options.
