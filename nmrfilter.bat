@@ -1,10 +1,16 @@
 @echo off
 setlocal
 
-@echo off
-echo "           __   _                            __"
-echo "|\ | |\/| |__) (_ . | |_  _  _       /|     |_ "
-echo "| \| |  | | \  |  | | |_ (- |    \/   | .   __)"
+:::
+:::           __   _                            __
+:::|\ | |\/| |__) (_ . | |_  _  _       /|     |_ 
+:::| \| |  | | \  |  | | |_ (- |    \/   | .   __)
+:::
+
+for /f "delims=: tokens=*" %%A in ('findstr /b ::: "%~f0"') do @echo(%%A
+
+
+
 
 rem Get the directory path where the batch file is located
 set "script_dir=%~dp0"
@@ -15,10 +21,10 @@ rem Check if the virtual environment already exists in the script's directory
 if "%CONDA_SHLVL%" == "" GOTO pyvenv
 if "%CONDA_SHLVL%" == "0" GOTO pyvenv
 
-:condause
-    echo Conda is activated, using conda environment..
-    GOTO :skip
-:end
+
+echo Conda is activated, using conda environment..
+GOTO :skip
+
 
 :pyvenv
     echo Conda environment not in use, using Python Virtual Environment
