@@ -1,10 +1,8 @@
 name: nmrfilter
 channels:
   - conda-forge
-  - pytorch
 dependencies:
   - python=3.11.2
-  - anaconda
   - rdkit
   - pytorch
   - torchvision
@@ -14,7 +12,6 @@ dependencies:
   - pyarrow
   - numba
   - click
-  - pip
   - ipywidgets
   - pip:
     - igraph
