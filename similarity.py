@@ -7,6 +7,7 @@ import sys
 import os
 import matplotlib.pyplot as plt
 import pandas as pd
+import nmrplot.core as npl
 
 def Two_Column_List(file):
     with open(file) as input:
@@ -253,12 +254,22 @@ def similarity(cp, project, echo):
 	if os.path.exists(datapath+os.sep+project+os.sep+cp.get('msmsinput')[0:len(cp.get('msmsinput'))-4]+'names.txt'):
 		with open(datapath+os.sep+project+os.sep+cp.get('msmsinput')[0:len(cp.get('msmsinput'))-4]+'names.txt') as f:
 			linesnames = f.read().splitlines()
+
+
+
 	#we make plot
 	i=0
 	for name in linesnames:
 		#print(name)
 		#print(ysim)
 		#print(xsim)
+		#datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('predictionoutput'),'r'
+
+		#hmbc_bruker_ar = cp.get('hmbcbruker').split(",")
+		#hmbc_bruker_fp = datapath+os.sep+project+os.sep+hmbc_bruker_ar[0]
+		#hsqc_bruker_ar = cp.get('hsqcbruker').split(",")
+		#hsqc_bruker_fp = datapath+os.sep+project+os.sep+hsqc_bruker_ar[0]
+
 		fig = plt.figure(figsize=(30,10))
 		if usehmbc!= 'false':
 			ax = fig.add_subplot(1,3,1)
@@ -266,6 +277,11 @@ def similarity(cp, project, echo):
 			ax.set_ylim([0, 200])
 			ax.invert_xaxis()
 			ax.invert_yaxis()
+
+			hmbc_bg_img = plt.imread(datapath+os.sep+project+os.sep+'plots'+ os.sep + "hmbc_spectrum.png")
+			ax.imshow(hmbc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.5)
+
+
 			ax.scatter(ysim[i][0], xsim[i][0], c='grey', label='simulated hmbc ('+str(len(ysim[i][0]))+')', alpha=0.6, edgecolors='none', s=12)
 			if len(xreal[i][0])>0:
 				ax.scatter(yreal[i][0], xreal[i][0], c='green', label='measured assigned ('+str(len(yreal[i][0]))+')', alpha=1, edgecolors='none', s=12)
@@ -294,6 +310,10 @@ def similarity(cp, project, echo):
 		ax.set_ylim([0, 200])
 		ax.invert_xaxis()
 		ax.invert_yaxis()
+
+		hsqc_bg_img = plt.imread(datapath+os.sep+project+os.sep+'plots'+ os.sep + "hsqc_spectrum.png")
+		ax.imshow(hsqc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.5)
+
 		ax.scatter(ysim[i][1], xsim[i][1], c='grey', label='simulated hsqc ('+str(len(ysim[i][1]))+')', alpha=0.6, edgecolors='none', s=12)
 		if len(xreal[i][1])>0:
 			ax.scatter(yreal[i][1], xreal[i][1], c='green', label='measured assigned ('+str(len(yreal[i][1]))+')', alpha=1, edgecolors='none', s=12)

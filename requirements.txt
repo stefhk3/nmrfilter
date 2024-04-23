@@ -13,3 +13,6 @@ torch
 tqdm
 igraph
 louvain
+pillow
+nmrglue
+git+https://github.com/miguelarbesu/nmrplot
