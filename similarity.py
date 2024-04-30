@@ -278,8 +278,12 @@ def similarity(cp, project, echo):
 			ax.invert_xaxis()
 			ax.invert_yaxis()
 
-			hmbc_bg_img = plt.imread(datapath+os.sep+project+os.sep+'plots'+ os.sep + "hmbc_spectrum.png")
-			ax.imshow(hmbc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.5)
+			if 'hmbcbruker' in cp.keys():
+				try:
+					hmbc_bg_img = plt.imread(datapath+os.sep+project+os.sep+'plots'+ os.sep + "hmbc_spectrum.png")
+					ax.imshow(hmbc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.5)
+				except:
+					pass
 
 
 			ax.scatter(ysim[i][0], xsim[i][0], c='grey', label='simulated hmbc ('+str(len(ysim[i][0]))+')', alpha=0.6, edgecolors='none', s=12)
@@ -311,8 +315,13 @@ def similarity(cp, project, echo):
 		ax.invert_xaxis()
 		ax.invert_yaxis()
 
-		hsqc_bg_img = plt.imread(datapath+os.sep+project+os.sep+'plots'+ os.sep + "hsqc_spectrum.png")
-		ax.imshow(hsqc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.5)
+
+		if 'hsqcbruker' in cp.keys():
+			try:
+				hsqc_bg_img = plt.imread(datapath+os.sep+project+os.sep+'plots'+ os.sep + "hsqc_spectrum.png")
+				ax.imshow(hsqc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.5)
+			except:
+				pass
 
 		ax.scatter(ysim[i][1], xsim[i][1], c='grey', label='simulated hsqc ('+str(len(ysim[i][1]))+')', alpha=0.6, edgecolors='none', s=12)
 		if len(xreal[i][1])>0:
@@ -354,6 +363,14 @@ def similarity(cp, project, echo):
 			ax.set_ylim([0, 200])
 			ax.invert_xaxis()
 			ax.invert_yaxis()
+
+			if 'hsqctocsybruker' in cp.keys():
+				try:
+					hsqctocsy_bg_img = plt.imread(datapath+os.sep+project+os.sep+'plots'+ os.sep + "hsqctocsy_spectrum.png")
+					ax.imshow(hsqctocsy_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.5)
+				except:
+					pass
+
 			ax.scatter(ysim[i][2], xsim[i][2], c='grey', label='simulated hsqc ('+str(len(ysim[i][2]))+')', alpha=0.6, edgecolors='none', s=12)
 			if len(xreal[i][2])>0:
 				ax.scatter(yreal[i][2], xreal[i][2], c='green', label='measured assigned ('+str(len(yreal[i][2]))+')', alpha=1, edgecolors='none', s=12)
@@ -379,6 +396,8 @@ def similarity(cp, project, echo):
 			ax.grid(True)
 		fig.savefig(datapath+os.sep+project+os.sep+'plots'+os.sep+name+'.png', transparent=False, dpi=80, bbox_inches="tight")
 		i+=1
+		
+		
 		plt.close()
 		
 	i=0
