@@ -27,3 +27,6 @@ dependencies:
     - cirpy
     - pubchempy
     - ruamel.yaml
+    - pillow
+    - nmrglue
+    - git+https://github.com/miguelarbesu/nmrplot
