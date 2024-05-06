@@ -55,12 +55,13 @@ Before running, in the `nmrproc.properties` file, the `datadir` property must be
 With these files in place, the program can be run by using `./nmrfilter.sh <project name>` on Linux or `./nmrfilter.bat <project name>` on Windows. Replace `<project name>` with the name of the project (folder name) you want the predictions for. When running, the program creates a Python virtual environment installing everything needed for its use. If you prefer to use the external environment, use an Anaconda environment provided. 
 
 
-Following optional features are available:
+Following features are available:
 - HSQCTOCSY shifts can be included. Include the shifts in the `spectruminput` file and set the `usehsqctocsy` property to `true`.
 - Debug output can be produced by setting the property `debug` to true. As a prequisite, a file `testallnames.txt` needs to be included in the project folder. The file should contain the names of the compounds in the same order as in the `msmsinput` file.
 - Parameters for tolerances and resolutions for the clustering and network algorithm can be set. See **Glossary** for details.
 - To use respredict, set the property `usedeeplearning` to `true`. See **Use of Respredict** for further information. 
 - Nmrfilter v1.5 uses a offline reference database for the HOSE code based spectra predictions. The database can be updated by running `./nmrfilter.sh --update`. The database gets updated on a monthly basis.
+- Nmrfilter v1.5 can be used for batch simulation of desired NMR spectra. Using the `--simulate` flag when running, e.g `./nmrfilter.sh pbolduswithhsqctocsy --simulate`, Nmrfilter v1.5 will simulate spectras for the candidates. `testallnames.txt` file is mandatory (may be placeholder names) together with the `msmsinput` SMILES file. The program will produce spectra for the experiments specified in `nmrproc.properties`. These can be found at `<project-folder>/sim_plots`.
 
 NB! While the file `testallnames.txt` is not mandatory for the identification, it is highly recommended to include it. Without this file, no plots will be produced for further manual analysis/verification of results.
 

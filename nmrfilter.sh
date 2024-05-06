@@ -64,6 +64,7 @@ java -cp "simulate.jar:lib/*" uk.ac.dmu.simulate.Simulate $1 > /dev/null 2>&1
 
 if [[ "$@" =~ "--simulate" ]]; then
     echo ""
+    python3 simulateplots.py $1
     echo "Completed. Simulated spectra are available in the project directory."
 else
     python3 nmrfilter2.py $1
