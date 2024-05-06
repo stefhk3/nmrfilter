@@ -287,7 +287,7 @@ def similarity(cp, project, echo):
 		#print(xsim)
 		#datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('predictionoutput'),'r'
 
-		print("Plotting.." + name)
+		
 		#A - image
 		#Q - HSQC
 		#B - HMBC
@@ -317,7 +317,7 @@ def similarity(cp, project, echo):
 			print("Structure image not found for " + name)
 			pass
 		
-		print("Try block passed")
+		
 		ax_dict['A'].axis('off')
 		ax_dict['A'].imshow(skeletal_structure)
 		

@@ -9,6 +9,12 @@ echo "
 # Get the directory path where the shell script is located
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+if [[ "$@" =~ "--update" ]]; then
+    echo "Updating the database.."
+    echo ""
+    ./databaseupdate.sh
+    exit 0
+fi
 
 if [[ -z $CONDA_SHLVL || $CONDA_SHLVL == 0 ]]; then
     echo "Conda environment not in use, using Python Virtual Environment"

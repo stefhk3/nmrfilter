@@ -15,6 +15,14 @@ for /f "delims=: tokens=*" %%A in ('findstr /b ::: "%~f0"') do @echo(%%A
 rem Get the directory path where the batch file is located
 set "script_dir=%~dp0"
 
+if "%2" == "--update" (
+    echo Updating the database..
+    echo
+    call ./databaseupdate.bat
+    exit /b 0
+)
+
+
 rem Check if the virtual environment already exists in the script's directory
 
 
