@@ -8,7 +8,7 @@ import os
 import matplotlib.pyplot as plt
 import pandas as pd
 import nmrplot.core as npl
-from adjustText import adjust_text
+import textalloc as ta
 
 def Two_Column_List(file):
     with open(file) as input:
@@ -287,7 +287,6 @@ def similarity(cp, project, echo):
 		#print(xsim)
 		#datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('predictionoutput'),'r'
 
-		
 		#A - image
 		#Q - HSQC
 		#B - HMBC
@@ -332,28 +331,36 @@ def similarity(cp, project, echo):
 			if 'hmbcbruker' in cp.keys():
 				try:
 					hmbc_bg_img = plt.imread(datapath+os.sep+project+os.sep+'plots'+ os.sep + "hmbc_spectrum.png")
-					ax_dict['B'].imshow(hmbc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.5)
+					ax_dict['B'].imshow(hmbc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.35)
 				except:
 					pass
 
 
 
 
-			ax_dict['B'].scatter(ysim[i][0], xsim[i][0], c='grey', label='simulated hmbc ('+str(len(ysim[i][0]))+')', alpha=0.6, edgecolors='none', s=12)
+			ax_dict['B'].scatter(ysim[i][0], xsim[i][0], c='grey', label='simulated hmbc ('+str(len(ysim[i][0]))+')', alpha=0.6, edgecolors='none', s=50)
 			
 
 			if len(xreal[i][0])>0:
-				ax_dict['B'].scatter(yreal[i][0], xreal[i][0], c='green', label='measured assigned ('+str(len(yreal[i][0]))+')', alpha=1, edgecolors='none', s=12)
-			ax_dict['B'].scatter(yrealunassigned[i][0], xrealunassigned[i][0], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][0]))+')', alpha=0.6, edgecolors='none', s=12)
+				ax_dict['B'].scatter(yreal[i][0], xreal[i][0], c='green', label='measured assigned ('+str(len(yreal[i][0]))+')', alpha=1, edgecolors='none', s=50)
+			ax_dict['B'].scatter(yrealunassigned[i][0], xrealunassigned[i][0], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][0]))+')', alpha=0.6, edgecolors='none', s=50)
 			
 			texts = []
+			xs = []
+			ys = []
 			for point_b in spectra_simulated_dicts[i]['b']:
-				x, y, c_nr, h_nr = point_b
-				#print("Scattering HMBC point label of x: " + str(x) + " y: " + str(y) + " the C idx: " + str(c_nr) + " H idx: " + str(h_nr))
 				
-				texts.append(ax_dict['B'].annotate(f'C: {c_nr}, H: {h_nr}', (y, x), xytext=(y+0.5, x+0.5), arrowprops=dict(arrowstyle="-")))
+				y, x, c_nr, h_nr = point_b
 			
-			adjust_text(texts, ax=ax_dict['B'], force_text=(0.5, 1), force_static=(0.5, 1), force_explode=(0.2, 0.6), max_move=30)
+				xs.append(x)
+				ys.append(y)
+				
+				texts.append(f'C:{c_nr};H{h_nr}')
+			
+			
+			ta.allocate(ax_dict['B'], xs, ys, texts, x_scatter=xs, y_scatter=ys, textsize=8)
+
+
 
 			if debug=='true':
 				xrealrest=[]
@@ -385,24 +392,27 @@ def similarity(cp, project, echo):
 		if 'hsqcbruker' in cp.keys():
 			try:
 				hsqc_bg_img = plt.imread(datapath+os.sep+project+os.sep+'plots'+ os.sep + "hsqc_spectrum.png")
-				ax_dict['Q'].imshow(hsqc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.5)
+				ax_dict['Q'].imshow(hsqc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.35)
 			except:
 				pass
 
-		ax_dict['Q'].scatter(ysim[i][1], xsim[i][1], c='grey', label='simulated hsqc ('+str(len(ysim[i][1]))+')', alpha=0.6, edgecolors='none', s=12)
+		ax_dict['Q'].scatter(ysim[i][1], xsim[i][1], c='grey', label='simulated hsqc ('+str(len(ysim[i][1]))+')', alpha=0.6, edgecolors='none', s=50)
 		if len(xreal[i][1])>0:
-			ax_dict['Q'].scatter(yreal[i][1], xreal[i][1], c='green', label='measured assigned ('+str(len(yreal[i][1]))+')', alpha=1, edgecolors='none', s=12)
-		ax_dict['Q'].scatter(yrealunassigned[i][1], xrealunassigned[i][1], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][1]))+')', alpha=0.6, edgecolors='none', s=12)
+			ax_dict['Q'].scatter(yreal[i][1], xreal[i][1], c='green', label='measured assigned ('+str(len(yreal[i][1]))+')', alpha=1, edgecolors='none', s=50)
+		ax_dict['Q'].scatter(yrealunassigned[i][1], xrealunassigned[i][1], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][1]))+')', alpha=0.6, edgecolors='none', s=50)
 
 		texts = []
+		xs = []
+		ys = []
 		for point_q in spectra_simulated_dicts[i]['q']:
-			x, y, c_nr, h_nr = point_q
+			y, x, c_nr, h_nr = point_q
 			#print("Scattering HSQC point label of x: " + str(x) + " y: " + str(y) + " the C idx: " + str(c_nr) + " H idx: " + str(h_nr))
+			xs.append(x)
+			ys.append(y)
 			
-			texts.append(ax_dict['Q'].annotate(f'C: {c_nr}, H: {h_nr}', (y, x), xytext=(y+0.5, x+0.5), arrowprops=dict(arrowstyle="-")))
-		
-		adjust_text(texts, ax=ax_dict['Q'], force_text=(0.5, 1), force_static=(0.5, 1), force_explode=(0.2, 0.6), max_move=30)
+			texts.append(f'C:{c_nr};H{h_nr}')
 
+		ta.allocate(ax_dict['Q'], xs, ys, texts, x_scatter=xs, y_scatter=ys, textsize=8)
 
 		if debug=='true':
 			xrealrest=[]
@@ -435,7 +445,7 @@ def similarity(cp, project, echo):
 		ax_dict['Q'].legend()
 		ax_dict['Q'].grid(True)
 		if usehsqctocsy == 'true':
-			#ax = fig.add_subplot(1,3,3)
+			
 			ax_dict['C'].set_xlim([0, 10])
 			ax_dict['C'].set_ylim([0, 200])
 			ax_dict['C'].invert_xaxis()
@@ -444,24 +454,27 @@ def similarity(cp, project, echo):
 			if 'hsqctocsybruker' in cp.keys():
 				try:
 					hsqctocsy_bg_img = plt.imread(datapath+os.sep+project+os.sep+'plots'+ os.sep + "hsqctocsy_spectrum.png")
-					ax_dict['C'].imshow(hsqctocsy_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.5)
+					ax_dict['C'].imshow(hsqctocsy_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.35)
 				except:
 					pass
 
-			ax_dict['C'].scatter(ysim[i][2], xsim[i][2], c='grey', label='simulated hsqc ('+str(len(ysim[i][2]))+')', alpha=0.6, edgecolors='none', s=12)
+			ax_dict['C'].scatter(ysim[i][2], xsim[i][2], c='grey', label='simulated hsqc ('+str(len(ysim[i][2]))+')', alpha=0.6, edgecolors='none', s=50)
 			if len(xreal[i][2])>0:
-				ax_dict['C'].scatter(yreal[i][2], xreal[i][2], c='green', label='measured assigned ('+str(len(yreal[i][2]))+')', alpha=1, edgecolors='none', s=12)
-			ax_dict['C'].scatter(yrealunassigned[i][2], xrealunassigned[i][2], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][2]))+')', alpha=0.6, edgecolors='none', s=12)
+				ax_dict['C'].scatter(yreal[i][2], xreal[i][2], c='green', label='measured assigned ('+str(len(yreal[i][2]))+')', alpha=1, edgecolors='none', s=50)
+			ax_dict['C'].scatter(yrealunassigned[i][2], xrealunassigned[i][2], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][2]))+')', alpha=0.6, edgecolors='none', s=50)
 			
 			texts = []
+			xs = []
+			ys = []
 			
 			for point_t in spectra_simulated_dicts[i]['t']:
-				x, y, c_nr, h_nr = point_t
-				
-				texts.append(ax_dict['C'].annotate(f'C: {c_nr}, H: {h_nr}', (y, x), xytext=(y+0.5, x+0.5), arrowprops=dict(arrowstyle="-")))
+				y, x, c_nr, h_nr = point_t
+				xs.append(x)
+				ys.append(y)
+				texts.append(f'C:{c_nr};H{h_nr}')
+							
 			
-			adjust_text(texts, ax=ax_dict['C'], force_text=(0.5, 1), force_static=(0.5, 1), force_explode=(0.2, 0.6), max_move=30)
-
+			ta.allocate(ax_dict['C'], xs, ys, texts, x_scatter=xs, y_scatter=ys, textsize=8)
 			
 			if debug=='true':
 				xrealrest=[]

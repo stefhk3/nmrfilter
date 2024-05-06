@@ -16,4 +16,4 @@ louvain
 pillow
 nmrglue
 git+https://github.com/miguelarbesu/nmrplot
-adjustText
+textalloc
