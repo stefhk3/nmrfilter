@@ -287,6 +287,7 @@ def similarity(cp, project, echo):
 		#print(xsim)
 		#datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('predictionoutput'),'r'
 
+		label_simulated = cp.get('labelsimulated')
 		#A - image
 		#Q - HSQC
 		#B - HMBC
@@ -345,20 +346,18 @@ def similarity(cp, project, echo):
 				ax_dict['B'].scatter(yreal[i][0], xreal[i][0], c='green', label='measured assigned ('+str(len(yreal[i][0]))+')', alpha=1, edgecolors='none', s=50)
 			ax_dict['B'].scatter(yrealunassigned[i][0], xrealunassigned[i][0], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][0]))+')', alpha=0.6, edgecolors='none', s=50)
 			
-			texts = []
-			xs = []
-			ys = []
-			for point_b in spectra_simulated_dicts[i]['b']:
+
+			if label_simulated == 'true':
+				texts = []
+				xs = []
+				ys = []
+				for point_b in spectra_simulated_dicts[i]['b']:	
+					y, x, c_nr, h_nr = point_b
+					xs.append(x)
+					ys.append(y)	
+					texts.append(f'C:{c_nr};H{h_nr}')
 				
-				y, x, c_nr, h_nr = point_b
-			
-				xs.append(x)
-				ys.append(y)
-				
-				texts.append(f'C:{c_nr};H{h_nr}')
-			
-			
-			ta.allocate(ax_dict['B'], xs, ys, texts, x_scatter=xs, y_scatter=ys, textsize=8)
+				ta.allocate(ax_dict['B'], xs, ys, texts, x_scatter=xs, y_scatter=ys, textsize=8)
 
 
 
@@ -401,18 +400,18 @@ def similarity(cp, project, echo):
 			ax_dict['Q'].scatter(yreal[i][1], xreal[i][1], c='green', label='measured assigned ('+str(len(yreal[i][1]))+')', alpha=1, edgecolors='none', s=50)
 		ax_dict['Q'].scatter(yrealunassigned[i][1], xrealunassigned[i][1], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][1]))+')', alpha=0.6, edgecolors='none', s=50)
 
-		texts = []
-		xs = []
-		ys = []
-		for point_q in spectra_simulated_dicts[i]['q']:
-			y, x, c_nr, h_nr = point_q
-			#print("Scattering HSQC point label of x: " + str(x) + " y: " + str(y) + " the C idx: " + str(c_nr) + " H idx: " + str(h_nr))
-			xs.append(x)
-			ys.append(y)
-			
-			texts.append(f'C:{c_nr};H{h_nr}')
+		if label_simulated == 'true':
+			texts = []
+			xs = []
+			ys = []
+			for point_q in spectra_simulated_dicts[i]['q']:
+				y, x, c_nr, h_nr = point_q
+				#print("Scattering HSQC point label of x: " + str(x) + " y: " + str(y) + " the C idx: " + str(c_nr) + " H idx: " + str(h_nr))
+				xs.append(x)
+				ys.append(y)
+				texts.append(f'C:{c_nr};H{h_nr}')
 
-		ta.allocate(ax_dict['Q'], xs, ys, texts, x_scatter=xs, y_scatter=ys, textsize=8)
+			ta.allocate(ax_dict['Q'], xs, ys, texts, x_scatter=xs, y_scatter=ys, textsize=8)
 
 		if debug=='true':
 			xrealrest=[]
@@ -463,18 +462,17 @@ def similarity(cp, project, echo):
 				ax_dict['C'].scatter(yreal[i][2], xreal[i][2], c='green', label='measured assigned ('+str(len(yreal[i][2]))+')', alpha=1, edgecolors='none', s=50)
 			ax_dict['C'].scatter(yrealunassigned[i][2], xrealunassigned[i][2], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][2]))+')', alpha=0.6, edgecolors='none', s=50)
 			
-			texts = []
-			xs = []
-			ys = []
-			
-			for point_t in spectra_simulated_dicts[i]['t']:
-				y, x, c_nr, h_nr = point_t
-				xs.append(x)
-				ys.append(y)
-				texts.append(f'C:{c_nr};H{h_nr}')
-							
-			
-			ta.allocate(ax_dict['C'], xs, ys, texts, x_scatter=xs, y_scatter=ys, textsize=8)
+			if label_simulated == 'true':
+				texts = []
+				xs = []
+				ys = []
+				for point_t in spectra_simulated_dicts[i]['t']:
+					y, x, c_nr, h_nr = point_t
+					xs.append(x)
+					ys.append(y)
+					texts.append(f'C:{c_nr};H{h_nr}')
+								
+				ta.allocate(ax_dict['C'], xs, ys, texts, x_scatter=xs, y_scatter=ys, textsize=8)
 			
 			if debug=='true':
 				xrealrest=[]
