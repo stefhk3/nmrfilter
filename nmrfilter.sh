@@ -36,7 +36,9 @@ fi
 
 #start the processing
 python3 nmrfilter.py $1
-out=$(java -cp "./*" uk.ac.dmu.simulate.Convert $1)
+# out=$(java -cp "./*" uk.ac.dmu.simulate.Convert $1)
+out=$(java -cp "simulate.jar:lib/*" uk.ac.dmu.simulate.Convert $1)
+
 
 #out=$(echo $out | tr -d '\n')
 readarray -d _ -t outs <<<"$out"
@@ -50,7 +52,9 @@ then
     python3 predict_standalone.py --filename ${outs[2]}$1/${outs[1]} --format sdf --nuc 1H --sanitize --addhs false > ${outs[2]}$1/predh.json
     cd ..
 fi
-java -cp "./*" uk.ac.dmu.simulate.Simulate $1
+
+#java -cp "./*" uk.ac.dmu.simulate.Simulate $1 > /dev/null 2>&1
+java -cp "simulate.jar:lib/*" uk.ac.dmu.simulate.Simulate $1 > /dev/null 2>&1
 
 if [[ "$@" =~ "--simulate" ]]; then
     echo ""
