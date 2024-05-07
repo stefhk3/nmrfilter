@@ -59,7 +59,7 @@ GOTO :skip
 
 rem Start processing
 python nmrfilter.py %1
-java -cp "./*" uk.ac.dmu.simulate.Convert %1 > temp.txt
+java -cp "simulate.jar;lib/*" uk.ac.dmu.simulate.Convert %1 > temp.txt
 set /p OUT=<temp.txt
 for /f "tokens=1,2,3 delims=_" %%a in ("%OUT%") do (
   set DL=%%a
