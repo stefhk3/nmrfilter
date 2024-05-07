@@ -9,6 +9,12 @@ echo "
 # Get the directory path where the shell script is located
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+if [[ "$@" =~ "--update" ]]; then
+    echo "Updating the database.."
+    echo ""
+    ./databaseupdate.sh
+    exit 0
+fi
 
 if [[ -z $CONDA_SHLVL || $CONDA_SHLVL == 0 ]]; then
     echo "Conda environment not in use, using Python Virtual Environment"
@@ -36,7 +42,9 @@ fi
 
 #start the processing
 python3 nmrfilter.py $1
-out=$(java -cp "./*" uk.ac.dmu.simulate.Convert $1)
+# out=$(java -cp "./*" uk.ac.dmu.simulate.Convert $1)
+out=$(java -cp "simulate.jar:lib/*" uk.ac.dmu.simulate.Convert $1)
+
 
 #out=$(echo $out | tr -d '\n')
 readarray -d _ -t outs <<<"$out"
@@ -50,10 +58,13 @@ then
     python3 predict_standalone.py --filename ${outs[2]}$1/${outs[1]} --format sdf --nuc 1H --sanitize --addhs false > ${outs[2]}$1/predh.json
     cd ..
 fi
-java -cp "./*" uk.ac.dmu.simulate.Simulate $1
+
+#java -cp "./*" uk.ac.dmu.simulate.Simulate $1 > /dev/null 2>&1
+java -cp "simulate.jar:lib/*" uk.ac.dmu.simulate.Simulate $1 > /dev/null 2>&1
 
 if [[ "$@" =~ "--simulate" ]]; then
     echo ""
+    python3 simulateplots.py $1
     echo "Completed. Simulated spectra are available in the project directory."
 else
     python3 nmrfilter2.py $1

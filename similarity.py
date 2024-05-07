@@ -8,6 +8,7 @@ import os
 import matplotlib.pyplot as plt
 import pandas as pd
 import nmrplot.core as npl
+import textalloc as ta
 
 def Two_Column_List(file):
     with open(file) as input:
@@ -26,14 +27,32 @@ def similarity(cp, project, echo):
 	fp = open(datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('predictionoutput'),'r')
 	spectra_simulated = []
 	spectrum_simulated= []
+	spectra_simulated_dicts = []
+	spectrum_simulated_dict = {}
 	line=fp.readline().strip()
 	while line:
 		if line is '/':
 			spectra_simulated.append(spectrum_simulated)
+			spectra_simulated_dicts.append(spectrum_simulated_dict)
 			spectrum_simulated=[]
+			spectrum_simulated_dict = {}
 		else:
 			peaks_string=line.split(",")
 			peaks_float=[float(peaks_string[0]),float(peaks_string[1]),peaks_string[2]]
+			
+
+			#Add the relevent experiment peak to the right dictionary for the labelling afterwards
+			peak_x = float(peaks_string[0])
+			peak_y = float(peaks_string[1])
+			peak_type = peaks_string[2]
+			peak_c = int(peaks_string[3])
+			peak_h = int(peaks_string[4])
+
+			if peak_type in spectrum_simulated_dict:
+				spectrum_simulated_dict[peak_type].append([peak_x, peak_y, peak_c, peak_h])
+			else:
+				spectrum_simulated_dict[peak_type] = [[peak_x, peak_y, peak_c, peak_h]]
+
 			spectrum_simulated.append(peaks_float)
 		line=fp.readline().strip()
 	#spectra_simulated.append(spectrum_simulated)
@@ -258,6 +277,9 @@ def similarity(cp, project, echo):
 
 
 	#we make plot
+	#print(spectra_simulated_dicts)
+
+
 	i=0
 	for name in linesnames:
 		#print(name)
@@ -265,31 +287,80 @@ def similarity(cp, project, echo):
 		#print(xsim)
 		#datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('predictionoutput'),'r'
 
-		#hmbc_bruker_ar = cp.get('hmbcbruker').split(",")
-		#hmbc_bruker_fp = datapath+os.sep+project+os.sep+hmbc_bruker_ar[0]
-		#hsqc_bruker_ar = cp.get('hsqcbruker').split(",")
-		#hsqc_bruker_fp = datapath+os.sep+project+os.sep+hsqc_bruker_ar[0]
+		label_simulated = cp.get('labelsimulated')
+		#A - image
+		#Q - HSQC
+		#B - HMBC
+  
+		plt_w = 15
+		plt_h = 30
+		mosaic = """A;Q"""
 
-		fig = plt.figure(figsize=(30,10))
-		if usehmbc!= 'false':
-			ax = fig.add_subplot(1,3,1)
-			ax.set_xlim([0, 10])
-			ax.set_ylim([0, 200])
-			ax.invert_xaxis()
-			ax.invert_yaxis()
+		if usehmbc == 'true':
+			if usehsqctocsy == 'true':
+				mosaic = "AAA;BQC"
+				plt_w = 45
+				
+			else:  
+				mosaic = "AA;BQ"
+				plt_w = 30
+		elif usehmbc == 'false' and usehsqctocsy == 'true':
+			mosaic = "AA;QC"
+			plt_w = 30
+
+		fig = plt.figure(figsize=(plt_w, plt_h))
+		ax_dict = fig.subplot_mosaic(mosaic)
+
+		try:
+			skeletal_structure = plt.imread(datapath+os.sep+project+os.sep+"reports"+os.sep+name+".jpg")			
+		except:
+			print("Structure image not found for " + name)
+			pass
+		
+		
+		ax_dict['A'].axis('off')
+		ax_dict['A'].imshow(skeletal_structure)
+		
+
+		if usehmbc != 'false':
+			#ax = fig.add_subplot(1,3,1)
+			ax_dict['B'].set_xlim([0, 10])
+			ax_dict['B'].set_ylim([0, 200])
+			ax_dict['B'].invert_xaxis()
+			ax_dict['B'].invert_yaxis()
 
 			if 'hmbcbruker' in cp.keys():
 				try:
 					hmbc_bg_img = plt.imread(datapath+os.sep+project+os.sep+'plots'+ os.sep + "hmbc_spectrum.png")
-					ax.imshow(hmbc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.5)
+					ax_dict['B'].imshow(hmbc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.35)
 				except:
 					pass
 
 
-			ax.scatter(ysim[i][0], xsim[i][0], c='grey', label='simulated hmbc ('+str(len(ysim[i][0]))+')', alpha=0.6, edgecolors='none', s=12)
+
+
+			ax_dict['B'].scatter(ysim[i][0], xsim[i][0], c='grey', label='simulated hmbc ('+str(len(ysim[i][0]))+')', alpha=0.6, edgecolors='none', s=50)
+			
+
 			if len(xreal[i][0])>0:
-				ax.scatter(yreal[i][0], xreal[i][0], c='green', label='measured assigned ('+str(len(yreal[i][0]))+')', alpha=1, edgecolors='none', s=12)
-			ax.scatter(yrealunassigned[i][0], xrealunassigned[i][0], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][0]))+')', alpha=0.6, edgecolors='none', s=12)
+				ax_dict['B'].scatter(yreal[i][0], xreal[i][0], c='green', label='measured assigned ('+str(len(yreal[i][0]))+')', alpha=1, edgecolors='none', s=50)
+			ax_dict['B'].scatter(yrealunassigned[i][0], xrealunassigned[i][0], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][0]))+')', alpha=0.6, edgecolors='none', s=50)
+			
+
+			if label_simulated == 'true':
+				texts = []
+				xs = []
+				ys = []
+				for point_b in spectra_simulated_dicts[i]['b']:	
+					y, x, c_nr, h_nr = point_b
+					xs.append(x)
+					ys.append(y)	
+					texts.append(f'C:{c_nr};H{h_nr}')
+				
+				ta.allocate(ax_dict['B'], xs, ys, texts, x_scatter=xs, y_scatter=ys, textsize=8)
+
+
+
 			if debug=='true':
 				xrealrest=[]
 				yrealrest=[]
@@ -306,27 +377,42 @@ def similarity(cp, project, echo):
 							xrealrest.append(peak_real[0])
 							yrealrest.append(peak_real[1])
 				if len(xrealrest)>0:
-					ax.scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.2, edgecolors='none', s=12)
-			ax.legend()
-			ax.grid(True)
-		ax = fig.add_subplot(1,3,2)
-		ax.set_xlim([0, 10])
-		ax.set_ylim([0, 200])
-		ax.invert_xaxis()
-		ax.invert_yaxis()
+					ax_dict['B'].scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.2, edgecolors='none', s=12)
+			ax_dict['B'].legend()
+			ax_dict['B'].grid(True)
+		#ax = fig.add_subplot(1,3,2)
+  
+		ax_dict['Q'].set_xlim([0, 10])
+		ax_dict['Q'].set_ylim([0, 200])
+		ax_dict['Q'].invert_xaxis()
+		ax_dict['Q'].invert_yaxis()
 
 
 		if 'hsqcbruker' in cp.keys():
 			try:
 				hsqc_bg_img = plt.imread(datapath+os.sep+project+os.sep+'plots'+ os.sep + "hsqc_spectrum.png")
-				ax.imshow(hsqc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.5)
+				ax_dict['Q'].imshow(hsqc_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.35)
 			except:
 				pass
 
-		ax.scatter(ysim[i][1], xsim[i][1], c='grey', label='simulated hsqc ('+str(len(ysim[i][1]))+')', alpha=0.6, edgecolors='none', s=12)
+		ax_dict['Q'].scatter(ysim[i][1], xsim[i][1], c='grey', label='simulated hsqc ('+str(len(ysim[i][1]))+')', alpha=0.6, edgecolors='none', s=50)
 		if len(xreal[i][1])>0:
-			ax.scatter(yreal[i][1], xreal[i][1], c='green', label='measured assigned ('+str(len(yreal[i][1]))+')', alpha=1, edgecolors='none', s=12)
-		ax.scatter(yrealunassigned[i][1], xrealunassigned[i][1], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][1]))+')', alpha=0.6, edgecolors='none', s=12)
+			ax_dict['Q'].scatter(yreal[i][1], xreal[i][1], c='green', label='measured assigned ('+str(len(yreal[i][1]))+')', alpha=1, edgecolors='none', s=50)
+		ax_dict['Q'].scatter(yrealunassigned[i][1], xrealunassigned[i][1], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][1]))+')', alpha=0.6, edgecolors='none', s=50)
+
+		if label_simulated == 'true':
+			texts = []
+			xs = []
+			ys = []
+			for point_q in spectra_simulated_dicts[i]['q']:
+				y, x, c_nr, h_nr = point_q
+				#print("Scattering HSQC point label of x: " + str(x) + " y: " + str(y) + " the C idx: " + str(c_nr) + " H idx: " + str(h_nr))
+				xs.append(x)
+				ys.append(y)
+				texts.append(f'C:{c_nr};H{h_nr}')
+
+			ta.allocate(ax_dict['Q'], xs, ys, texts, x_scatter=xs, y_scatter=ys, textsize=8)
+
 		if debug=='true':
 			xrealrest=[]
 			yrealrest=[]
@@ -352,29 +438,42 @@ def similarity(cp, project, echo):
 						xrealrest.append(peak_real[0])
 						yrealrest.append(peak_real[1])
 			if len(xrealrest)>0:
-				ax.scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.2, edgecolors='none', s=12)
+				ax_dict['Q'].scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.2, edgecolors='none', s=12)
 				#print(xrealrest)
 				#print(yrealrest)
-		ax.legend()
-		ax.grid(True)
-		if usehsqctocsy== 'true':
-			ax = fig.add_subplot(1,3,3)
-			ax.set_xlim([0, 10])
-			ax.set_ylim([0, 200])
-			ax.invert_xaxis()
-			ax.invert_yaxis()
+		ax_dict['Q'].legend()
+		ax_dict['Q'].grid(True)
+		if usehsqctocsy == 'true':
+			
+			ax_dict['C'].set_xlim([0, 10])
+			ax_dict['C'].set_ylim([0, 200])
+			ax_dict['C'].invert_xaxis()
+			ax_dict['C'].invert_yaxis()
 
 			if 'hsqctocsybruker' in cp.keys():
 				try:
 					hsqctocsy_bg_img = plt.imread(datapath+os.sep+project+os.sep+'plots'+ os.sep + "hsqctocsy_spectrum.png")
-					ax.imshow(hsqctocsy_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.5)
+					ax_dict['C'].imshow(hsqctocsy_bg_img, extent=[10, 0, 200, 0], aspect='auto', alpha=0.35)
 				except:
 					pass
 
-			ax.scatter(ysim[i][2], xsim[i][2], c='grey', label='simulated hsqc ('+str(len(ysim[i][2]))+')', alpha=0.6, edgecolors='none', s=12)
+			ax_dict['C'].scatter(ysim[i][2], xsim[i][2], c='grey', label='simulated hsqc ('+str(len(ysim[i][2]))+')', alpha=0.6, edgecolors='none', s=50)
 			if len(xreal[i][2])>0:
-				ax.scatter(yreal[i][2], xreal[i][2], c='green', label='measured assigned ('+str(len(yreal[i][2]))+')', alpha=1, edgecolors='none', s=12)
-			ax.scatter(yrealunassigned[i][2], xrealunassigned[i][2], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][2]))+')', alpha=0.6, edgecolors='none', s=12)
+				ax_dict['C'].scatter(yreal[i][2], xreal[i][2], c='green', label='measured assigned ('+str(len(yreal[i][2]))+')', alpha=1, edgecolors='none', s=50)
+			ax_dict['C'].scatter(yrealunassigned[i][2], xrealunassigned[i][2], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][2]))+')', alpha=0.6, edgecolors='none', s=50)
+			
+			if label_simulated == 'true':
+				texts = []
+				xs = []
+				ys = []
+				for point_t in spectra_simulated_dicts[i]['t']:
+					y, x, c_nr, h_nr = point_t
+					xs.append(x)
+					ys.append(y)
+					texts.append(f'C:{c_nr};H{h_nr}')
+								
+				ta.allocate(ax_dict['C'], xs, ys, texts, x_scatter=xs, y_scatter=ys, textsize=8)
+			
 			if debug=='true':
 				xrealrest=[]
 				yrealrest=[]
@@ -391,9 +490,11 @@ def similarity(cp, project, echo):
 							xrealrest.append(peak_real[0])
 							yrealrest.append(peak_real[1])
 				if len(xrealrest)>0:
-					ax.scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.2, edgecolors='none', s=12)
-			ax.legend()
-			ax.grid(True)
+					ax_dict['C'].scatter(yrealrest, xrealrest, c='red', label='measured unused ('+str(len(yrealrest))+')', alpha=0.2, edgecolors='none', s=12)
+			ax_dict['C'].legend()
+			ax_dict['C'].grid(True)
+
+
 		fig.savefig(datapath+os.sep+project+os.sep+'plots'+os.sep+name+'.png', transparent=False, dpi=80, bbox_inches="tight")
 		i+=1
 		

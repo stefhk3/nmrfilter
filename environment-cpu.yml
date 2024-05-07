@@ -26,3 +26,4 @@ dependencies:
     - pillow
     - nmrglue
     - git+https://github.com/miguelarbesu/nmrplot
+    - textalloc
