@@ -74,7 +74,7 @@ if %DL%==true (
     cd ..
 )
 
-java -cp "./*" uk.ac.dmu.simulate.Simulate %1
+java -cp "simulate.jar;lib/*" uk.ac.dmu.simulate.Simulate %1
 if "%2" == "--simulate" (
     python simulateplots.py %1
     echo Completed. Simulated spectra are available in the project directory.
