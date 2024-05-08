@@ -76,11 +76,12 @@ The following table contains all the properties in the `nmrproc.properties` file
 | ----------- | ----------- | ---------- |
 | datadir | Path to the absolute directory containing project folders to be used for input.  | /home/karl/nmrfilterprojects |
 | msmsinput | Name of the file containing the list of can-didate substances in a project folder.  | testall.smi |
-| predictionoutput | Name of the file containing simulated spectra shifts of the candidate substances .  | resultpre-diction.csv |
-| result | Name of solvent if used. Choices available are `Methanol-D4 (CD3OD)`, `Chloro-form-D1 (CDC13)` and `Dimethylsulph-oxide-D6 (DMSO-D6, C2D6SO)`. Otherwise use `Unreported`.  | `Methanol-D4 (CD3OD)` |
+| predictionoutput | Name of the file containing simulated spectra shifts of the candidate substances .  | resultprediction.csv |
+| result | File name of the generated result file | result.txt |
+| solvent | Name of solvent if used. Choices available are `Methanol-D4 (CD3OD)`, `Chloro-form-D1 (CDC13)` and `Dimethylsulph-oxide-D6 (DMSO-D6, C2D6SO)`. Otherwise use `Unreported`.  | `Methanol-D4 (CD3OD)` |
 | tolerancec | Tolerance for the 13C axis.  | 0.2 |
 | toleranceh | Tolerance for the 1H axis.  | 0.02 |
-| spectuminput | Name of the file containing measured spectrum data.  | realspec-trum.csv |
+| spectuminput | Name of the file containing measured spectrum data.  | realspectrum.csv |
 | clusteringoutput | Name of a file created containing initial found cross peaks.  | cluster.txt |
 | rberresolution | Resolution parameter for the RBER algo-rithm provided by the Louvain library, which changes the size of the clusters. Larger the value, smaller the clusters.  | 0.2 |
 | usehmbc | Boolean. Define the use of HMBC or not.  | true |
