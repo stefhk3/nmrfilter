@@ -1,0 +1,33 @@
+name: nmrfiltergpu
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.11.2
+  - anaconda
+  - rdkit
+  - pytorch
+  - torchvision
+  - cudatoolkit
+  - pandas
+  - seaborn
+  - scikit-learn
+  - pyarrow
+  - numba
+  - click
+  - pip
+  - ipywidgets
+  - pip:
+    - igraph
+    - louvain
+    - ruffus
+    - tqdm
+    - networkx
+    - tensorboardX
+    - cirpy
+    - pubchempy
+    - ruamel.yaml
+    - pillow
+    - nmrglue
+    - git+https://github.com/miguelarbesu/nmrplot
+    - textalloc

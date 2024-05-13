@@ -6,10 +6,14 @@ click
 cirpy
 scikit-learn
 matplotlib
-python-igraph
+igraph
 pubchempy
 numba
 torch
 tqdm
 igraph
 louvain
+pillow
+nmrglue
+git+https://github.com/miguelarbesu/nmrplot
+textalloc

@@ -1,0 +1,5 @@
+
+# Ingore Python virutal environment
+/nmrfilter_env/
+# Git add, commit, push script
+gitscript.sh
