@@ -40,6 +40,13 @@ Use of Respredict
 
 Use of Respredict requires extra packages, rendering the use of bundled Anaconda environments necessary. See **Anaconda** for further information.
 
+Jupyter Notebook
+==================
+
+Jupyter Notebook must be installed locally when to be used. Jupyter Notebook can be enabled by first running:
+
+`jupyter nbextension enable --py widgetsnbextension`
+
 Running
 =======
 
