@@ -15,7 +15,7 @@ for /f "delims=: tokens=*" %%A in ('findstr /b ::: "%~f0"') do @echo(%%A
 rem Get the directory path where the batch file is located
 set "script_dir=%~dp0"
 
-if "%2" == "--update" (
+if "%1" == "--update" (
     echo Updating the database..
     echo
     call ./databaseupdate.bat
