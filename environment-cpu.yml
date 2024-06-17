@@ -1,12 +1,10 @@
 name: nmrfilter
 channels:
+  - conda-forge
+dependencies:
+  - python=3.11.2
   - rdkit
   - pytorch
-dependencies:
-  - python=3.7
-  - anaconda
-  - rdkit
-  - pytorch=1.4
   - torchvision
   - pandas
   - seaborn
@@ -14,16 +12,18 @@ dependencies:
   - pyarrow
   - numba
   - click
-  - pip
   - ipywidgets
   - pip:
-    - python-igraph
-    - louvain
+    - igraph
     - ruffus
     - tqdm
     - networkx
     - tensorflow-cpu
     - tensorboardX
-    - cirpy    
+    - cirpy
     - pubchempy
     - louvain
+    - pillow
+    - nmrglue
+    - git+https://github.com/miguelarbesu/nmrplot
+    - textalloc

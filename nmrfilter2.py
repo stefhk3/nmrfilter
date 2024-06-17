@@ -6,6 +6,7 @@ from clustering import *
 from clusterlouvain import *
 from similarity import *
 from nmrutil import *
+from plotutil import *
 
 project=sys.argv[1]
 cp = readprops(project)
@@ -20,5 +21,6 @@ cluster2dspectrum(cp, project)
 print("Detecting communities in the measures spectrum...")
 cluster2dspectrumlouvain(cp, project)
 print("Calculating best hits in your compounds...")
+generateBackgrounds(cp, project)
 similarity(cp, project, True)
 
