@@ -31,7 +31,7 @@ def similarity(cp, project, echo):
 	spectrum_simulated_dict = {}
 	line=fp.readline().strip()
 	while line:
-		if line is '/':
+		if line == '/':
 			spectra_simulated.append(spectrum_simulated)
 			spectra_simulated_dicts.append(spectrum_simulated_dict)
 			spectrum_simulated=[]
@@ -64,7 +64,7 @@ def similarity(cp, project, echo):
 	cluster_real= []
 	line=fp.readline().strip()
 	while line:
-		if line is '/':
+		if line == '/':
 			if len(cluster_real)>0:
 				clusters_real.append(cluster_real)
 			cluster_real=[]
