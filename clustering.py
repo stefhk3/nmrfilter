@@ -3,7 +3,7 @@ from numpy import *
 import configparser
 import os
 
-def Two_Column_List(file):
+def Two_Column_List_c(file):
     with open(file) as input:
         mycsv = csv.reader(input, delimiter='\t', skipinitialspace=True)
         peaks = []
@@ -26,7 +26,7 @@ def cluster2dspectrum(cp, project):
 	C_LIMIT=float(cp.get('tolerancec'))
 	H_LIMIT=float(cp.get('toleranceh'))
 
-	peaks = Two_Column_List(datapath+os.sep+project+os.sep+cp.get('spectruminput'))
+	peaks = Two_Column_List_c(datapath+os.sep+project+os.sep+cp.get('spectruminput'))
 	#print(peaks)
 
 	xclusters=[]
@@ -35,7 +35,7 @@ def cluster2dspectrum(cp, project):
 		found=False
 		for xcluster in xclusters:
 			#print(str(peak[2])+'  '+str(xcluster[0][2])+'  '+str(peak[1])+'  '+str(xcluster[0][1]))
-			if peak[1]>xcluster[0][1]-C_LIMIT and peak[1]<xcluster[0][1]+C_LIMIT:
+			if peak[1]>float(xcluster[0][1])-C_LIMIT and peak[1]<float(xcluster[0][1])+C_LIMIT:
 				xcluster.append(peak)
 				found=True
 				break;
@@ -43,7 +43,7 @@ def cluster2dspectrum(cp, project):
 			xclusters.append([peak])
 		found=False
 		for ycluster in yclusters:
-			if peak[2]>ycluster[0][2]-H_LIMIT and peak[2]<ycluster[0][2]+H_LIMIT:
+			if peak[2]>float(ycluster[0][2])-H_LIMIT and peak[2]<float(ycluster[0][2])+H_LIMIT:
 				ycluster.append(peak)
 				found=True
 				break;

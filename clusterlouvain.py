@@ -4,7 +4,7 @@ import csv
 import louvain
 import os
 
-def Two_Column_List(file):
+def Two_Column_List_l(file):
     with open(file) as input:
         type=""
         mycsv = csv.reader(input, delimiter='\t', skipinitialspace=True)
@@ -21,7 +21,7 @@ def Two_Column_List(file):
 def cluster2dspectrumlouvain(cp, project):
 	datapath=cp.get('datadir')
 
-	realpeaks = Two_Column_List(datapath+os.sep+project+os.sep+cp.get('spectruminput'))
+	realpeaks = Two_Column_List_l(datapath+os.sep+project+os.sep+cp.get('spectruminput'))
 	#print(realpeaks)
 	g=Graph.Read_Edgelist(datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('clusteringoutput'),directed=False)
 	#print(g)
