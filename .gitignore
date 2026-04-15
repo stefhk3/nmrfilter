@@ -3,3 +3,4 @@
 /nmrfilter_env/
 # Git add, commit, push script
 gitscript.sh
+__pycache__

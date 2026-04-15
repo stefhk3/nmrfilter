@@ -1,0 +1,3 @@
+[submodule "nmrfilterprojects"]
+	path = nmrfilterprojects
+	url = https://github.com/stefhk3/nmrfilterprojects
