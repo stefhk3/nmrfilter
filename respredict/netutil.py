@@ -392,10 +392,10 @@ class PredModel(object):
         self.USE_CUDA = USE_CUDA
 
         if self. USE_CUDA:
-            net = torch.load(checkpoint_filename)
+            net = torch.load(checkpoint_filename, weights_only=False)
         else:
             net = torch.load(checkpoint_filename, 
-                             map_location=lambda storage, loc: storage)
+                             map_location=lambda storage, loc: storage, weights_only=False)
 
         self.net = net
         self.net.eval()
