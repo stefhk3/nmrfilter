@@ -5,7 +5,8 @@ import os
 def readprops(project=""):
 	result={}
 	cp = configparser.ConfigParser()
-	cp.readfp(open('nmrproc.properties'))
+	with open('nmrproc.properties') as fh:
+		cp.read_file(fh)
 	for (each_key, each_val) in cp.items('onesectiononly'):
 		result[each_key]=each_val
 	datapath=cp.get('onesectiononly', 'datadir')
