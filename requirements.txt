@@ -1,4 +1,4 @@
-openjdk
+install-jdk
 numpy==1.24
 scipy
 pandas
