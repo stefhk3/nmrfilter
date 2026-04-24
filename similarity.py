@@ -2,7 +2,6 @@ from scipy.optimize import linear_sum_assignment
 import numpy as np
 import csv
 import math
-import configparser
 import sys
 import os
 import matplotlib.pyplot as plt

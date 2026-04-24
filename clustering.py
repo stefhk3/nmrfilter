@@ -1,6 +1,5 @@
 import csv
 from numpy import *
-import configparser
 import os
 
 def Two_Column_List_c(file):
