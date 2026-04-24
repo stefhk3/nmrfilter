@@ -12,7 +12,8 @@ def readprops(project=""):
 	datapath=cp.get('onesectiononly', 'datadir')
 	if not project=="" and os.path.exists(datapath+os.sep+project+os.sep+'nmrproc.properties'):
 		cp2 = configparser.ConfigParser()
-		cp2.readfp(open(datapath+os.sep+project+os.sep+'nmrproc.properties'))
+		with open(datapath+os.sep+project+os.sep+'nmrproc.properties') as fh2:
+			cp2.read_file(fh2)
 		for (each_key, each_val) in cp2.items('onesectiononly'):
 			result[each_key]=each_val
 	return result
