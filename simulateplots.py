@@ -77,13 +77,13 @@ def make_plots(cp, project):
 
         try:
             skeletal_structure = plt.imread(datapath+os.sep+project+os.sep+"reports"+os.sep+name+".jpg")			
+            ax_dict['A'].imshow(skeletal_structure)
         except:
             print("Structure image not found for " + name)
             pass
 		
 		
         ax_dict['A'].axis('off')
-        ax_dict['A'].imshow(skeletal_structure)
 
         ax_dict['Q'].set_xlim([10, 0])
         ax_dict['Q'].set_ylim([200, 0])

@@ -312,13 +312,13 @@ def similarity(cp, project, echo):
 
 		try:
 			skeletal_structure = plt.imread(datapath+os.sep+project+os.sep+"reports"+os.sep+name+".jpg")			
+			ax_dict['A'].imshow(skeletal_structure)
 		except:
 			print("Structure image not found for " + name)
 			pass
 		
 		
 		ax_dict['A'].axis('off')
-		ax_dict['A'].imshow(skeletal_structure)
 		
 
 		if usehmbc != 'false':
