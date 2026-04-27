@@ -314,7 +314,7 @@ def similarity(cp, project, echo):
 			skeletal_structure = plt.imread(datapath+os.sep+project+os.sep+"reports"+os.sep+name+".jpg")			
 			ax_dict['A'].imshow(skeletal_structure)
 		except:
-			print("Structure image not found for " + name)
+			#print("Structure image not found for " + name)
 			pass
 		
 		
