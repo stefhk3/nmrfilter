@@ -1,7 +1,6 @@
 import configparser
 import os
 
-
 def readprops(project=""):
 	result={}
 	cp = configparser.ConfigParser()
@@ -52,3 +51,9 @@ def checkprojectdir(datapath, project, cp):
 			    os.remove(os.path.join(datapath+os.sep+project+os.sep+"plots", f))
 	else:
 		os.mkdir(datapath+os.sep+project+os.sep+"plots")
+
+def checkfile(resultfile):
+	if os.path.exists(resultfile):
+		print("Created file "+resultfile)
+	else:
+		print("Problem: Expected file "+resultfile+" not created!")
