@@ -5,6 +5,10 @@ Nmrfilter v1.5 is an updated version of [Nmrfilter](https://github.com/stefhk3/n
 
 Nmrfilter v1.5 can be used to find the most likely candidate substance from a set of candidates provided by there user, thereby automatically identifying the substance from its NMR spectrum data. Nmrfilter v1.5 outputs a list of the provided candidate substances and their individual match ratings in comparison to the original substance with plots visualizing the similarities between the compounds.
 
+It can be run online as a Jupyter notebook or installed locally (see below). For the Jupyter notebook, there are two options:
+- [Direct acces](https://mybinder.org/v2/gh/stefhk3/nmrfilter/HEAD?urlpath=%2Fdoc%2Ftree%2Fnmrfilter.ipynb) does not require login, data are not persistent.
+- [With login](https://hub.nfdi-jupyter.de/v2/gh/stefhk3/nmrfilter/HEAD?urlpath=%2Fdoc%2Ftree%2Fnmrfilter.ipynb) requires creation of an account, but offers persistence.
+
 Installation
 ============
 
