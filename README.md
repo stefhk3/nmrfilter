@@ -51,6 +51,8 @@ Jupyter Notebook must be installed locally when to be used. Jupyter Notebook can
 
 `jupyter nbextension enable --py widgetsnbextension`
 
+If you have an ORCID account, you can also run the notebook in the browser using [this url}(https://hub.nfdi-jupyter.de/v2/gh/stefhk3/nmrfilter/HEAD?urlpath=%2Fdoc%2Ftree%2Fnmrfilter.ipynb). Chose the NFDI4Chem community and then ORCID to log in.
+
 Running
 =======
 
