@@ -23,8 +23,9 @@ def generateBackgrounds(cp, project):
             hmbc_img = Image.open(hmbc_bruker_out)
             hmbc_cropped_image = hmbc_img.crop((left, upper, right, lower))
             hmbc_cropped_image.save(hmbc_bruker_out)
-        except:
+        except Exception as err:
             print("HMBC Bruker path or format is misconfigured, background image unavailable. If this was unintended, comment the property out.")
+            print(f"Unexpected {err=}, {type(err)=}")
     
     if 'hsqcbruker' in cp.keys():
         
@@ -40,8 +41,9 @@ def generateBackgrounds(cp, project):
             hsqc_img = Image.open(hsqc_bruker_out)
             hsqc_cropped_image = hsqc_img.crop((left, upper, right, lower))
             hsqc_cropped_image.save(hsqc_bruker_out)
-        except:
+        except Exception as err:
             print("HSQC Bruker path or format is misconfigred, background image unavailable. If this was unintended, comment the property out.")
+            print(f"Unexpected {err=}, {type(err)=}")
 
     if 'hsqctocsybruker' in cp.keys():
 
@@ -59,6 +61,7 @@ def generateBackgrounds(cp, project):
             hsqctocsy_cropped_image = hsqctocsy_img.crop((left, upper, right, lower))
             hsqctocsy_cropped_image.save(hsqctocsy_bruker_out)
 
-        except:
+        except Exception as err:
             print("HSQCTOCSY Bruker path or format is misconfigured, background image unavailable. If this was unintended, comment the property out.")
+            print(f"Unexpected {err=}, {type(err)=}")
     
