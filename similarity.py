@@ -346,7 +346,7 @@ def similarity(cp, project, echo):
 			ax_dict['B'].scatter(yrealunassigned[i][0], xrealunassigned[i][0], c='blue', label='measured unassigned closest shifts ('+str(len(yrealunassigned[i][0]))+')', alpha=0.6, edgecolors='none', s=50)
 			
 
-			if label_simulated == 'true':
+			if label_simulated == 'true' and 'b' in spectra_simulated_dicts[i]:
 				texts = []
 				xs = []
 				ys = []
