@@ -26,6 +26,9 @@ def cluster2dspectrum(cp, project):
 	H_LIMIT=float(cp.get('toleranceh'))
 
 	peaks = Two_Column_List_c(datapath+os.sep+project+os.sep+cp.get('spectruminput'))
+	if len(peaks)==0:
+		print("We found no peaks in "+cp.get('spectruminput')+". Please check the format (x and y values separated by tabs)!")
+		return;
 	#print(peaks)
 
 	xclusters=[]

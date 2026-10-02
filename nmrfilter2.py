@@ -17,7 +17,7 @@ louvainoutputfile=datapath+os.sep+project+os.sep+'result'+os.sep+cp.get('louvain
 
 print("Clustering the peaks in the measured spectrum...")
 cluster2dspectrum(cp, project)
-print("Detecting communities in the measures spectrum...")
+print("Detecting communities in the measured spectrum...")
 cluster2dspectrumlouvain(cp, project)
 print("Calculating best hits in your compounds...")
 generateBackgrounds(cp, project)
