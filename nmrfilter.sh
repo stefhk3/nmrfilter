@@ -45,11 +45,41 @@ python3 nmrfilter.py $1
 # out=$(java -cp "./*" uk.ac.dmu.simulate.Convert $1)
 out=$(java -cp "simulate.jar:lib/*" uk.ac.dmu.simulate.Convert $1)
 
+outs=()
+current=""
+is_escaped=false
 
-#out=$(echo $out | tr -d '\n')
-readarray -d _ -t outs <<<"$out"
+# Loop through the string character by character
+for (( i=0; i<${#out}; i++ )); do
+    char="${out:$i:1}"
+    
+    if [ "$is_escaped" = true ]; then
+        if [ "$char" = "_" ]; then
+            # Found an escaped underscore \_ -> keep the _ but drop the \
+            current+="_"
+        else
+            # It was just a normal backslash followed by another character
+            current+="\\$char"
+        fi
+        is_escaped=false
+    elif [ "$char" = "\\" ]; then
+        # Backslash detected, look at the next character in the next iteration
+        is_escaped=true
+    elif [ "$char" = "_" ]; then
+        # Unescaped underscore -> delimiter found! Save element and reset
+        outs+=("$current")
+        current=""
+    else
+        current+="$char"
+    fi
+done
+
+# Don't forget to add the final piece remaining in the buffer
+if [ -n "$current" ] || [ "$char" = "_" ]; then
+    outs+=("$current")
+fi
+
 outs[2]=$(echo ${outs[2]} | tr -d '\n')
-
 
 if [ ${outs[0]} = 'true' ]
 then

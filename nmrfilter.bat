@@ -1,5 +1,5 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
 :::
 :::           __   _                            __
@@ -61,11 +61,15 @@ rem Start processing
 python nmrfilter.py %1
 java -cp "simulate.jar;lib/*" uk.ac.dmu.simulate.Convert %1 > temp.txt
 set /p OUT=<temp.txt
-for /f "tokens=1,2,3 delims=_" %%a in ("%OUT%") do (
-  set DL=%%a
-  set SDFILE=%%b
-  set PROJECTPATH=%%c
+set "TMP_OUT=%OUT:\_=#ESC#%"
+for /f "tokens=1,2,3 delims=_" %%a in ("%TMP_OUT%") do (
+    set "DL=%%a"
+    set "SDFILE=%%b"
+    set "PROJECTPATH=%%c"
 )
+if defined DL          set "DL=!DL:#ESC#=_!"
+if defined SDFILE      set "SDFILE=!SDFILE:#ESC#=_!"
+if defined PROJECTPATH set "PROJECTPATH=!PROJECTPATH:#ESC#=_!"
 
 if %DL%==true (
     cd respredict
